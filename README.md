@@ -1,7 +1,7 @@
 ### Feed2tweet
 
 Feed2tweet automatically parses rss feeds, identifies new posts and posts them on Twitter.
-For the full documentation, [read it online](https://retweet.readthedocs.org/en/latest/).
+For the full documentation, [read it online](https://feed2tweet.readthedocs.org/en/latest/).
 
 ### Quick Install
 

@@ -2,7 +2,7 @@ How to install Feed2tweet
 =========================
 From PyPI
 ^^^^^^^^^
-    $ pip install retweet
+    $ pip install feed2tweet
 
 From sources
 ^^^^^^^^^^^^
@@ -25,9 +25,9 @@ From sources
 * Untar the tarball and go to the source directory with the following commands::
 
     $ tar zxvf feed2tweet-0.1.tar.gz
-    $ cd retweet
+    $ cd feed2tweet
 
-* Next, to install Retweet on your computer, type the following command with the root user::
+* Next, to install Feed2tweet on your computer, type the following command with the root user::
 
     $ python setup.py install
     $ # or
