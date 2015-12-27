@@ -1,0 +1,21 @@
+distributions linux
+financement participatif
+intégration continue
+libertés individuelles
+logiciel d'entreprise
+messagerie instantanée
+objet connecté
+offre d'emploi
+open data
+open hardware
+open source
+réseaux sociaux
+vie privée
+gestion de configuration
+journal du hacker
+journal du pirate
+lignes de commande
+pensées du libre
+philosophie du Libre
+ruby on rails
+système de fichiers
