@@ -1,4 +1,4 @@
-# Copyright © 2015 Carl Chenet <carl.chenet@ohmytux.com>
+# Copyright 2015 Carl Chenet <carl.chenet@ohmytux.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -32,7 +32,6 @@ setup(
     version='0.1',
     license='GNU GPL v3',
     data_files = ['config-sample.ini'],
-    install_requires = ['feedparser', 'tweepy>=1.8'],
     description='Parse rss feed and tweet new posts to Twitter',
     long_description='Parse rss feed and tweet new posts to Twitter',
     author = 'Carl Chenet',
