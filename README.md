@@ -30,11 +30,14 @@ For the full documentation, [read it online](https://retweet.readthedocs.org/en/
         access_token=213416590-jgJnrJG5gz132nzerl5zerwi0ahmnwkfJFN9nr3j
         access_token_secret=3janlPMqDKlunJ4Hnr90k2bnfk3jfnwkFjeriFZERj32Z
 
+        [cache]
+        cachefile=cache.dat
+
         [rss]
         uri=https://www.journalduhacker.net/newest.rss
 
         [hashtaglist]
-        several_words_hashtags_list: severalwordshashtaglist.txt
+        several_words_hashtags_list=severalwordshashtaglist.txt
 
 * Launch Feed2tweet
 
