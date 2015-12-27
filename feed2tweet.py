@@ -1,5 +1,19 @@
 #!/usr/bin/env python
 # vim:ts=4:sw=4:ft=python:fileencoding=utf-8
+# Copyright © 2015 Carl Chenet <carl.chenet@ohmytux.com>
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 """Checks rss feed and posts to twitter.
 
 Check an rss feed and if the latest entry is different than post it to twitter.
@@ -101,12 +115,11 @@ def main():
                     'summary': entry['summary'],
                     'hashtag': ' '.join(['#%s' % i for i in entry['tags'][0]['term'].split()[:2]]),
                 }
-            print rss
             post_update('%s %s %s' % (rss['title'], rss['link'], rss['hashtag']))
 
             # We keep the first feed in the cache, to use feed2tweet in normal mode the next time
             if tweet_count == 0:
-                cPickle.dump(rss, open(cachefile', 'wb'), -1)
+                cPickle.dump(rss, open(cachefile, 'wb'), -1)
 
             tweet_count += 1
             if tweet_count >= options.limit:
@@ -117,13 +130,10 @@ def main():
         tmphashtags = feed['entries'][0]['tags'][0]['term']
         for element in severalwordshashtags:
             if element in prehashtags:
-                print 'hashtag multiple mots trouve'
                 severalwordsinhashtag = True
                 tmphashtags = prehashtags.replace(element, ''.join(element.split()))
         if severalwordsinhashtag:
             tmphashtags = tmphashtags.replace("'", "")
-            print 'tmphashtag:'
-            print tmphashtags
             finalhashtags = tmphashtags.split(' ')
             rss = {
                 'id': feed['entries'][0]['id'],
