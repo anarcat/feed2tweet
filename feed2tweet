@@ -93,6 +93,12 @@ def main():
         if not options.all and entry['id'] == cache['id']:
             break
 
+        rss = {
+            'id': entry['id'],
+            'link': entry['link'],
+            'title': entry['title'],
+            'summary': entry['summary'],
+        }
         severalwordsinhashtag = False
         prehashtags = entry['tags'][0]['term']
         tmphashtags = entry['tags'][0]['term']
@@ -103,22 +109,10 @@ def main():
         if severalwordsinhashtag:
             tmphashtags = tmphashtags.replace("'", "")
             finalhashtags = tmphashtags.split(' ')
-            rss = {
-                'id': entry['id'],
-                'link': entry['link'],
-                'title': entry['title'],
-                'summary': entry['summary'],
-                # issue with splitting hashtags in 2 words is right there
-                'hashtag': ' '.join(['#%s' % i for i in finalhashtags]),
-            }
+            # issue with splitting hashtags in 2 words is right there
+            rss['hashtag'] = ' '.join(['#%s' % i for i in finalhashtags])
         else:
-            rss = {
-                'id': entry['id'],
-                'link': entry['link'],
-                'title': entry['title'],
-                'summary': entry['summary'],
-                'hashtag': ' '.join(['#%s' % i for i in entry['tags'][0]['term'].split()[:2]]),
-            }
+            rss['hashtag'] = ' '.join(['#%s' % i for i in entry['tags'][0]['term'].split()[:2]])
         if options.dryrun:
             print 'would post %s %s %s' % (rss['title'], rss['link'], rss['hashtag'])
         else:
