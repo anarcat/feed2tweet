@@ -16,13 +16,13 @@
 
 """Checks an RSS feed and posts new entries to twitter."""
 
-import codecs
-import logging
-import sys
-import os
-import cPickle
 from ConfigParser import SafeConfigParser
 from argparse import ArgumentParser
+import cPickle
+import codecs
+import logging
+import os
+import sys
 
 import feedparser
 import tweepy
