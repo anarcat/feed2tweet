@@ -22,7 +22,7 @@ import sys
 import os
 import cPickle
 from ConfigParser import SafeConfigParser
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 import feedparser
 import tweepy
@@ -52,21 +52,21 @@ def post_update(status):
 def main():
     """The main function."""
     global config
-    parser = OptionParser(version='%prog v' + __version__)
-    parser.add_option('-c', '--config',
-                      default=os.getenv('XDG_CONFIG_HOME', '~/.config/feed2tweet.ini'),
-                      help='Location of config file (default: %default)',
-                      metavar='FILE')
-    parser.add_option('-a', '--all', action='store_true', default=False,
-                      dest='all',
-                      help='tweet all RSS items, regardless of cache')
-    parser.add_option('-l', '--limit', dest='limit', default=10,
-                      help='tweet the first LIMIT feed items (default: %default)')
-    parser.add_option('-n', '--dry-run', dest='dryrun',
-                      action='store_true', default=False,
-                      help='Do not actually post tweets')
-    parser.epilog = __doc__
-    (options, args) = parser.parse_args()
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument('--version', action='version', version=__version__)
+    parser.add_argument('-c', '--config',
+                        default=os.getenv('XDG_CONFIG_HOME', '~/.config/feed2tweet.ini'),
+                        help='Location of config file (default: %(default)s)',
+                        metavar='FILE')
+    parser.add_argument('-a', '--all', action='store_true', default=False,
+                        dest='all',
+                        help='tweet all RSS items, regardless of cache')
+    parser.add_argument('-l', '--limit', dest='limit', default=10,
+                        help='tweet the first LIMIT feed items (default: %(default)s)')
+    parser.add_argument('-n', '--dry-run', dest='dryrun',
+                        action='store_true', default=False,
+                        help='Do not actually post tweets')
+    options = parser.parse_args()
     config = SafeConfigParser()
     if not config.read(os.path.expanduser(options.config)):
         sys.exit('Could not read config file')
