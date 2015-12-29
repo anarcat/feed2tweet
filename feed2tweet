@@ -88,7 +88,8 @@ def main():
     severalwordshashtags = [i.rstrip('\n') for i in severalwordshashtags]
     entries = feed['entries'][0:options.limit]
 
-    for entry in reversed(entries):
+    cached = False
+    for entry in entries:
         if not options.all and entry['id'] == cache['id']:
             break
 
@@ -117,7 +118,10 @@ def main():
         else:
             post_update('%s %s %s' % (rss['title'], rss['link'], rss['hashtag']))
 
-            cPickle.dump(rss, open(cachefile, 'wb'), -1)
+            # We keep the first feed in the cache, to use feed2tweet in normal mode the next time
+            if not cached:
+                cPickle.dump(rss, open(cachefile, 'wb'), -1)
+                cached = True
 
 
 if __name__ == "__main__":
