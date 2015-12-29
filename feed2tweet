@@ -32,6 +32,7 @@ __version__ = '0.1'
 
 config = None
 
+
 def post_update(status):
     global config
     consumer_key = config.get('twitter', 'consumer_key')
@@ -55,14 +56,15 @@ def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument('--version', action='version', version=__version__)
     parser.add_argument('-c', '--config',
-                        default=os.getenv('XDG_CONFIG_HOME', '~/.config/feed2tweet.ini'),
+                        default=os.getenv('XDG_CONFIG_HOME',
+                                          '~/.config/feed2tweet.ini'),
                         help='Location of config file (default: %(default)s)',
                         metavar='FILE')
     parser.add_argument('-a', '--all', action='store_true', default=False,
                         dest='all',
                         help='tweet all RSS items, regardless of cache')
     parser.add_argument('-l', '--limit', dest='limit', default=10,
-                        help='tweet the first LIMIT feed items (default: %(default)s)')
+                        help='tweet only LIMIT items (default: %(default)s)')
     parser.add_argument('-n', '--dry-run', dest='dryrun',
                         action='store_true', default=False,
                         help='Do not actually post tweets')
@@ -70,11 +72,13 @@ def main():
     config = SafeConfigParser()
     if not config.read(os.path.expanduser(options.config)):
         sys.exit('Could not read config file')
-    cachefile = os.path.expanduser(os.getenv('XDG_CACHE_HOME', config.get('cache', 'cachefile')))
+    cachefile = os.path.expanduser(os.getenv('XDG_CACHE_HOME',
+                                             config.get('cache', 'cachefile')))
     rss_uri = config.get('rss', 'uri')
     feed = feedparser.parse(rss_uri)
-    severalwordshashtagfile = config.get('hashtaglist', 'several_words_hashtags_list')
-    
+    severalwordshashtagfile = config.get('hashtaglist',
+                                         'several_words_hashtags_list')
+
     # lots of scary warnings about possible security risk using this method
     # but for local use I'd rather do this than a try-catch with open()
     if not os.path.isfile(cachefile):
@@ -82,7 +86,8 @@ def main():
         cPickle.dump({'id': None}, open(cachefile, 'wb'), -1)
 
     cache = cPickle.load(open(cachefile))
-    severalwordshashtags = codecs.open(severalwordshashtagfile, encoding='utf-8').readlines()
+    severalwordshashtags = codecs.open(severalwordshashtagfile,
+                                       encoding='utf-8').readlines()
     severalwordshashtags = [i.rstrip('\n') for i in severalwordshashtags]
     entries = feed['entries'][0:options.limit]
 
@@ -103,7 +108,8 @@ def main():
         for element in severalwordshashtags:
             if element in prehashtags:
                 severalwordsinhashtag = True
-                tmphashtags = prehashtags.replace(element, ''.join(element.split()))
+                tmphashtags = prehashtags.replace(element,
+                                                  ''.join(element.split()))
         if severalwordsinhashtag:
             tmphashtags = tmphashtags.replace("'", "")
             finalhashtags = tmphashtags.split(' ')
@@ -112,11 +118,14 @@ def main():
         else:
             rss['hashtag'] = ' '.join(['#%s' % i for i in entry['tags'][0]['term'].split()[:2]])
         if options.dryrun:
-            logging.warning('would post %s %s %s', rss['title'], rss['link'], rss['hashtag'])
+            logging.warning('would post %s %s %s',
+                            rss['title'], rss['link'], rss['hashtag'])
         else:
-            post_update('%s %s %s' % (rss['title'], rss['link'], rss['hashtag']))
+            post_update('%s %s %s'
+                        % (rss['title'], rss['link'], rss['hashtag']))
 
-            # We keep the first feed in the cache, to use feed2tweet in normal mode the next time
+            # We keep the first feed in the cache, to use feed2tweet
+            # in normal mode the next time
             if not cached:
                 cPickle.dump(rss, open(cachefile, 'wb'), -1)
                 cached = True
