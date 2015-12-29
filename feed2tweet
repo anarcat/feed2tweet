@@ -17,9 +17,9 @@
 """Checks an RSS feed and posts new entries to twitter."""
 
 import codecs
+import logging
 import sys
 import os
-import traceback
 import cPickle
 from ConfigParser import SafeConfigParser
 from optparse import OptionParser
@@ -44,8 +44,7 @@ def post_update(status):
     try:
         api.update_status(status)
     except tweepy.error.TweepError, e:
-        print "Error occurred while updating status:", e
-        sys.exit(1)
+        logging.warning("Error occurred while updating status: %s", e)
     else:
         return True
 
@@ -70,8 +69,7 @@ def main():
     (options, args) = parser.parse_args()
     config = SafeConfigParser()
     if not config.read(os.path.expanduser(options.config)):
-        print 'Could not read config file'
-        sys.exit(1)
+        sys.exit('Could not read config file')
     cachefile = os.path.expanduser(os.getenv('XDG_CACHE_HOME', config.get('cache', 'cachefile')))
     rss_uri = config.get('rss', 'uri')
     feed = feedparser.parse(rss_uri)
@@ -114,7 +112,7 @@ def main():
         else:
             rss['hashtag'] = ' '.join(['#%s' % i for i in entry['tags'][0]['term'].split()[:2]])
         if options.dryrun:
-            print 'would post %s %s %s' % (rss['title'], rss['link'], rss['hashtag'])
+            logging.warning('would post %s %s %s', rss['title'], rss['link'], rss['hashtag'])
         else:
             post_update('%s %s %s' % (rss['title'], rss['link'], rss['hashtag']))
 
@@ -125,19 +123,12 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG, format='%(message)s')
     try:
         main()
-    except KeyboardInterrupt, e:
+    except KeyboardInterrupt as e:
         # Ctrl-c
-        raise e
-    except SystemExit, e:
-        # sys.exit()
-        raise e
-    except Exception, e:
-        print "error, unexcepted exception"
-        print str(e)
-        traceback.print_exc()
-        sys.exit(1)
-    else:
-        # Main function is done, exit cleanly
-        sys.exit(0)
+        sys.exit('aborted')
+    except Exception:
+        logging.exception('unexpected exception')
+        raise
