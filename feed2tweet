@@ -16,7 +16,7 @@
 
 """Checks an RSS feed and posts new entries to twitter."""
 
-from ConfigParser import SafeConfigParser
+from ConfigParser import SafeConfigParser, NoOptionError
 from argparse import ArgumentParser
 import cPickle
 import codecs
@@ -32,14 +32,61 @@ __version__ = '0.1'
 
 config = None
 
+def oauth_init(auth):
+    '''initialise oauth access tokens
+
+    will overwrite existing tokens without confirmation, even if in dryrun'''
+
+    global config, options
+
+    logging.warning("Twitter access tokens need to be configured")
+    try:
+        redirect_url = auth.get_authorization_url()
+    except tweepy.TweepError:
+        logging.error('Error! Failed to get request token')
+        return False
+    verifier = raw_input('Visit %s and enter code here:' % redirect_url)
+    try:
+        auth.get_access_token(verifier)
+    except tweepy.TweepError:
+        logging.error('Error! Failed to get access token')
+        return False
+    logging.debug('received access tokens, writing to config: %s %s',
+                  auth.access_token, auth.access_token_secret)
+    if not config.has_section('twitter'): # future-proofing
+        config.add_section('twitter')
+    config.set('twitter', 'access_token', auth.access_token)
+    config.set('twitter', 'access_token_secret', auth.access_token_secret)
+    with open(os.path.expanduser(options.config), 'wb') as configfile:
+        config.write(configfile)
+
+def oauth_setup():
+    '''configure a oauth handler using our consumer key and secrets
+
+    in a separate function because we may wish to hardcode those
+    consumer key and secrets here, or at least provide defaults'''
+    global config
+    consumer_key = config.get('twitter', 'consumer_key')
+    consumer_secret = config.get('twitter', 'consumer_secret')
+    logging.debug('creating oauth handler with consumer key %s and secret %s',
+                  consumer_key, consumer_secret)
+    return tweepy.OAuthHandler(consumer_key, consumer_secret)
 
 def post_update(status):
     global config, options
-    consumer_key = config.get('twitter', 'consumer_key')
-    consumer_secret = config.get('twitter', 'consumer_secret')
-    access_token = config.get('twitter', 'access_token')
-    access_token_secret = config.get('twitter', 'access_token_secret')
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth = oauth_setup()
+    try:
+        access_token = config.get('twitter', 'access_token')
+        access_token_secret = config.get('twitter', 'access_token_secret')
+    except NoOptionError:
+        if oauth_init(auth):
+            access_token = config.get('twitter', 'access_token')
+            access_token_secret = config.get('twitter', 'access_token_secret')
+        else:
+            sys.exit('missing Twitter access tokens, aborting')
+
+    logging.debug('setting up access token %s and secret %s',
+                  access_token, access_token_secret)
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth)
     if options.dryrun:
@@ -81,6 +128,8 @@ def main():
                         help='enable debug output, work on log level DEBUG')
     parser.add_argument('--hashtaglist', dest='hashtaglist',
                         help='a list of hashtag to match')
+    parser.add_argument('--init', dest='init', action='store_true', default=False,
+                        help='reinitialize Twitter Oauth tokens')
     parser.add_argument('rss_uri', help='the RSS feed URL to fetch items from',
                         nargs='?')
     options = parser.parse_args()
@@ -95,6 +144,9 @@ def main():
         except NoOptionError:
             options.cachefile = os.path.join(os.getenv('XDG_CACHE_HOME', '~/.cache'), 'feed2tweet.dat')
     options.cachefile = os.path.expanduser(options.cachefile)
+
+    if options.init:
+        oauth_init(oauth_setup())
 
     if options.rss_uri is None:
         options.rss_uri = config.get('rss', 'uri')
