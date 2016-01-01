@@ -29,7 +29,6 @@ from ConfigParser import SafeConfigParser
 from optparse import OptionParser
 
 import feedparser
-import tweepy
 
 
 __version__ = '0.1'
@@ -37,6 +36,7 @@ __version__ = '0.1'
 config = None
 
 def post_update(status):
+    import tweepy
     global config
     consumer_key = config.get('twitter', 'consumer_key')
     consumer_secret = config.get('twitter', 'consumer_secret')
