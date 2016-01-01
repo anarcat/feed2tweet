@@ -34,7 +34,7 @@ config = None
 
 
 def post_update(status):
-    global config
+    global config, options
     consumer_key = config.get('twitter', 'consumer_key')
     consumer_secret = config.get('twitter', 'consumer_secret')
     access_token = config.get('twitter', 'access_token')
@@ -42,6 +42,9 @@ def post_update(status):
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth)
+    if options.dryrun:
+        logging.info('would post %s', status)
+        return False
     try:
         api.update_status(status)
     except tweepy.error.TweepError, e:
@@ -52,7 +55,7 @@ def post_update(status):
 
 def main():
     """The main function."""
-    global config
+    global config, options
     parser = ArgumentParser(description=__doc__)
     parser.add_argument('--version', action='version', version=__version__)
     parser.add_argument('-c', '--config',
@@ -145,18 +148,15 @@ def main():
             rss['hashtag'] = ' '.join(['#%s' % i for i in finalhashtags])
         else:
             rss['hashtag'] = ' '.join(['#%s' % i for i in entry['tags'][0]['term'].split()[:2]])
-        if options.dryrun:
-            logging.warning('would post %s %s %s',
-                            rss['title'], rss['link'], rss['hashtag'])
-        else:
-            post_update('%s %s %s'
-                        % (rss['title'], rss['link'], rss['hashtag']))
 
-            # We keep the first feed in the cache, to use feed2tweet
-            # in normal mode the next time
-            if not cached:
-                cPickle.dump(rss, open(options.cachefile, 'wb'), -1)
-                cached = True
+        post_update('%s %s %s'
+                    % (rss['title'], rss['link'], rss['hashtag']))
+
+        # We keep the first feed in the cache, to use feed2tweet
+        # in normal mode the next time
+        if not options.dryrun and not cached:
+            cPickle.dump(rss, open(options.cachefile, 'wb'), -1)
+            cached = True
 
 
 if __name__ == "__main__":
