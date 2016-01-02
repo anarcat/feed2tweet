@@ -68,7 +68,14 @@ def main():
     parser.add_argument('-n', '--dry-run', dest='dryrun',
                         action='store_true', default=False,
                         help='Do not actually post tweets')
+    parser.add_argument('-v', '--verbose', '--info', dest='log_level',
+                        action='store_const', const='info', default='warning',
+                        help='enable informative (verbose) output, work on log level INFO')
+    parser.add_argument('-d', '--debug', dest='log_level',
+                        action='store_const', const='debug', default='warning',
+                        help='enable debug output, work on log level DEBUG')
     options = parser.parse_args()
+    logging.basicConfig(level=options.log_level.upper(), format='%(message)s')
     config = SafeConfigParser()
     if not config.read(os.path.expanduser(options.config)):
         sys.exit('Could not read config file')
@@ -132,7 +139,6 @@ def main():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG, format='%(message)s')
     try:
         main()
     except KeyboardInterrupt as e:
