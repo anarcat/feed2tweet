@@ -100,7 +100,9 @@ def main():
 
     cached = False
     for entry in entries:
+        logging.debug('found feed entry %s, %s', entry['id'], entry['title'])
         if not options.all and entry['id'] == cache['id']:
+            logging.debug('found known entry, stopped processing')
             break
 
         rss = {
