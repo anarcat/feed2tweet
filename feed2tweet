@@ -71,6 +71,8 @@ def main():
     parser.add_option('-n', '--dry-run', dest='dryrun',
                       action='store_true', default=False,
                       help='Do not actually post tweets')
+    parser.add_option('--hashtaglist', dest='hashtaglist'
+                      help='a list of hashtag to match')
     (options, args) = parser.parse_args()
     config = SafeConfigParser()
     if not config.read(os.path.expanduser(options.config)):
@@ -84,8 +86,12 @@ def main():
     cachefile = os.path.expanduser(cachefile)
     rss_uri = config.get('rss', 'uri')
     feed = feedparser.parse(rss_uri)
-    severalwordshashtagfile = config.get('hashtaglist', 'several_words_hashtags_list')
-    
+    if options.hashtaglist is None:
+        try:
+            options.hashtaglist = config.get('hashtaglist', 'several_words_hashtags_list')
+        except NoOptionError:
+            options.hashtaglist = False
+
     # lots of scary warnings about possible security risk using this method
     # but for local use I'd rather do this than a try-catch with open()
     if not os.path.isfile(cachefile):
@@ -93,18 +99,20 @@ def main():
         cPickle.dump({'id': None}, open(cachefile, 'wb'), -1)
 
     cache = cPickle.load(open(cachefile))
-    severalwordshashtags = codecs.open(severalwordshashtagfile, encoding='utf-8').readlines()
-    severalwordshashtags = [i.rstrip('\n') for i in severalwordshashtags]
+    if options.hashtaglist:
+        severalwordshashtags = codecs.open(hashtaglist, encoding='utf-8').readlines()
+        severalwordshashtags = [i.rstrip('\n') for i in severalwordshashtags]
     if options.all:
         tweet_count = 0
         for entry in feed['entries']:
             severalwordsinhashtag = False
-            prehashtags = entry['tags'][0]['term']
-            tmphashtags = entry['tags'][0]['term']
-            for element in severalwordshashtags:
-                if element in prehashtags:
-                    severalwordsinhashtag = True
-                    tmphashtags = prehashtags.replace(element, ''.join(element.split()))
+            if options.hashtaglist:
+                prehashtags = entry['tags'][0]['term']
+                tmphashtags = entry['tags'][0]['term']
+                for element in severalwordshashtags:
+                    if element in prehashtags:
+                        severalwordsinhashtag = True
+                        tmphashtags = prehashtags.replace(element, ''.join(element.split()))
             if severalwordsinhashtag:
                 tmphashtags = tmphashtags.replace("'", "")
                 finalhashtags = tmphashtags.split(' ')
@@ -138,12 +146,13 @@ def main():
                 break
     else:
         severalwordsinhashtag = False
-        prehashtags = feed['entries'][0]['tags'][0]['term']
-        tmphashtags = feed['entries'][0]['tags'][0]['term']
-        for element in severalwordshashtags:
-            if element in prehashtags:
-                severalwordsinhashtag = True
-                tmphashtags = prehashtags.replace(element, ''.join(element.split()))
+        if options.hashtaglist:
+            prehashtags = feed['entries'][0]['tags'][0]['term']
+            tmphashtags = feed['entries'][0]['tags'][0]['term']
+            for element in severalwordshashtags:
+                if element in prehashtags:
+                    severalwordsinhashtag = True
+                    tmphashtags = prehashtags.replace(element, ''.join(element.split()))
         if severalwordsinhashtag:
             tmphashtags = tmphashtags.replace("'", "")
             finalhashtags = tmphashtags.split(' ')
