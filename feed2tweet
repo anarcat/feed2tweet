@@ -96,6 +96,12 @@ def main():
         options.rss_uri = config.get('rss', 'uri')
     feed = feedparser.parse(options.rss_uri)
 
+    if options.hashtaglist is None:
+        try:
+            options.hashtaglist = config.get('hashtaglist', 'several_words_hashtags_list')
+        except NoOptionError:
+            options.hashtaglist = False
+
     # lots of scary warnings about possible security risk using this method
     # but for local use I'd rather do this than a try-catch with open()
     if not os.path.isfile(options.cachefile):
