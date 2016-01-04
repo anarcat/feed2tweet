@@ -79,8 +79,12 @@ def main():
     config = SafeConfigParser()
     if not config.read(os.path.expanduser(options.config)):
         sys.exit('Could not read config file')
-    cachefile = os.path.expanduser(os.getenv('XDG_CACHE_HOME',
-                                             config.get('cache', 'cachefile')))
+    cachefile = os.getenv('XDG_CACHE_HOME')
+    if cachefile is None:
+        cachefile = config.get('cache', 'cachefile')
+    else:
+        cachefile = os.path.join(cachefile, 'feed2tweet.dat')
+    cachefile = os.path.expanduser(cachefile)
     rss_uri = config.get('rss', 'uri')
     feed = feedparser.parse(rss_uri)
     severalwordshashtagfile = config.get('hashtaglist',
