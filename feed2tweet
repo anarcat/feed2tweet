@@ -65,6 +65,8 @@ def main():
                         help='tweet all RSS items, regardless of cache')
     parser.add_argument('-l', '--limit', dest='limit', default=10,
                         help='tweet only LIMIT items (default: %(default)s)')
+    parser.add_argument('--cachefile', dest='cachefile',
+                        help='location of the cache file (default: %(default)s)')
     parser.add_argument('-n', '--dry-run', dest='dryrun',
                         action='store_true', default=False,
                         help='Do not actually post tweets')
@@ -74,21 +76,27 @@ def main():
     parser.add_argument('-d', '--debug', dest='log_level',
                         action='store_const', const='debug', default='warning',
                         help='enable debug output, work on log level DEBUG')
-    parser.add_argument('--hashtaglist', dest='hashtaglist'
+    parser.add_argument('--hashtaglist', dest='hashtaglist',
                         help='a list of hashtag to match')
+    parser.add_argument('rss_uri', help='the RSS feed URL to fetch items from',
+                        nargs='?')
     options = parser.parse_args()
     logging.basicConfig(level=options.log_level.upper(), format='%(message)s')
     config = SafeConfigParser()
     if not config.read(os.path.expanduser(options.config)):
         sys.exit('Could not read config file')
-    cachefile = os.getenv('XDG_CACHE_HOME')
-    if cachefile is None:
-        cachefile = config.get('cache', 'cachefile')
-    else:
-        cachefile = os.path.join(cachefile, 'feed2tweet.dat')
-    cachefile = os.path.expanduser(cachefile)
-    rss_uri = config.get('rss', 'uri')
-    feed = feedparser.parse(rss_uri)
+
+    if options.cachefile is None:
+        try:
+            options.cachefile = config.get('cache', 'cachefile')
+        except NoOptionError:
+            options.cachefile = os.path.join(os.getenv('XDG_CACHE_HOME', '~/.cache'), 'feed2tweet.dat')
+    options.cachefile = os.path.expanduser(options.cachefile)
+
+    if options.rss_uri is None:
+        options.rss_uri = config.get('rss', 'uri')
+    feed = feedparser.parse(options.rss_uri)
+
     if options.hashtaglist is None:
         try:
             options.hashtaglist = config.get('hashtaglist', 'several_words_hashtags_list')
@@ -97,13 +105,13 @@ def main():
 
     # lots of scary warnings about possible security risk using this method
     # but for local use I'd rather do this than a try-catch with open()
-    if not os.path.isfile(cachefile):
+    if not os.path.isfile(options.cachefile):
         # make a blank cache file
-        cPickle.dump({'id': None}, open(cachefile, 'wb'), -1)
+        cPickle.dump({'id': None}, open(options.cachefile, 'wb'), -1)
 
-    cache = cPickle.load(open(cachefile))
+    cache = cPickle.load(open(options.cachefile))
     if options.hashtaglist:
-        severalwordshashtags = codecs.open(severalwordshashtagfile,
+        severalwordshashtags = codecs.open(options.hashtaglist,
                                            encoding='utf-8').readlines()
         severalwordshashtags = [i.rstrip('\n') for i in severalwordshashtags]
     entries = feed['entries'][0:options.limit]
@@ -147,7 +155,7 @@ def main():
             # We keep the first feed in the cache, to use feed2tweet
             # in normal mode the next time
             if not cached:
-                cPickle.dump(rss, open(cachefile, 'wb'), -1)
+                cPickle.dump(rss, open(options.cachefile, 'wb'), -1)
                 cached = True
 
 
