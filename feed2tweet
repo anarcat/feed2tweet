@@ -116,6 +116,7 @@ def main():
 
     if options.rss_uri is None:
         options.rss_uri = config.get('rss', 'uri')
+    logging.info('downloading feed from %s', options.rss_uri)
     feed = feedparser.parse(options.rss_uri)
 
     if options.hashtaglist is None:
