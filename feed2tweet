@@ -51,7 +51,6 @@ def post_update(status):
         return True
 
 def setup_logging(options):
-    logging.basicConfig(level=options.log_level.upper(), format='%(message)s')
     if options.syslog:
         sl = logging.handlers.SysLogHandler(address='/dev/log')
         sl.setFormatter(logging.Formatter('feed2tweet[%(process)d]: %(message)s'))
@@ -62,6 +61,11 @@ def setup_logging(options):
         sl.setLevel(loglevel)
         logging.getLogger('').addHandler(sl)
         logging.debug('configured syslog level %s' % loglevel)
+    logging.getLogger('').setLevel(logging.DEBUG)
+    sh = logging.StreamHandler()
+    sh.setLevel(options.log_level.upper())
+    logging.getLogger('').addHandler(sh)
+    logging.debug('configured stdout level %s' % sh.level)
 
 def main():
     """The main function."""
