@@ -14,6 +14,12 @@ In order to configure Feed2tweet, you need to create a
     access_token=213416590-jgJnrJG5gz132nzerl5zerwi0ahmnwkfJFN9nr3j
     access_token_secret=3janlPMqDKlunJ4Hnr90k2bnfk3jfnwkFjeriFZERj32Z
 
+    [rss]
+    uri: https://www.journalduhacker.net/newest.rss
+
+    [hashtaglist]
+    several_words_hashtags_list: severalwordshashtaglist.txt
+
 For the [twitter] section:
 
 - consumer_key: the Twitter consumer key (see your apps.twitter.com webpage)
@@ -22,3 +28,13 @@ For the [twitter] section:
   generated if missing
 - access_token_secret: the Twitter access token secret key, will also
   be interactively generated
+
+For the [rss] section:
+
+- uri: the url of the rss feed to parse (can also be provided on the commandline)
+
+For the [hashtaglist] section:
+
+- several_words_hashtags_list: a path to the file containing hashtags
+  in two or more words. By default Feed2tweet adds a # before every
+  words of a hashtag. (can also be provided on the commandline)
