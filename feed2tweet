@@ -34,6 +34,7 @@ config = None
 
 
 def post_update(status):
+    '''Send a tweet to Twitter'''
     global config
     consumer_key = config.get('twitter', 'consumer_key')
     consumer_secret = config.get('twitter', 'consumer_secret')
