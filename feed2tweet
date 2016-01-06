@@ -115,6 +115,7 @@ def main():
                                            encoding='utf-8').readlines()
         severalwordshashtags = [i.rstrip('\n') for i in severalwordshashtags]
     entries = feed['entries'][0:options.limit]
+    entries.reverse()
 
     cached = False
     for entry in entries:
