@@ -77,8 +77,8 @@ def main():
                         help='enable debug output, work on log level DEBUG')
     parser.add_argument('--hashtaglist', dest='hashtaglist',
                         help='a list of hashtag to match')
-    parser.add_argument('rss_uri', help='the RSS feed URL to fetch items from',
-                        nargs='?')
+    parser.add_argument('-r', '--rss', help='the RSS feed URL to fetch items from',
+                        dest='rss_uri', metavar='http://...')
     options = parser.parse_args()
     logging.basicConfig(level=options.log_level.upper(), format='%(message)s')
     config = SafeConfigParser()
