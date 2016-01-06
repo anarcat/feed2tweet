@@ -95,7 +95,11 @@ def main():
     options.cachefile = os.path.expanduser(options.cachefile)
 
     if not options.rss_uri:
-        options.rss_uri = config.get('rss', 'uri')
+        try:
+            options.rss_uri = config.get('rss', 'uri')
+        except (NoOptionError, NoSectionError):
+            print 'uri parameter in the [rss] section of the configuration file is mandatory. Exiting.'
+            sys.exit(0)
     feed = feedparser.parse(options.rss_uri)
 
     if options.hashtaglist is None:
