@@ -86,7 +86,7 @@ def main():
     if not config.read(os.path.expanduser(options.config)):
         sys.exit('Could not read config file')
 
-    if options.cachefile is None:
+    if not options.cachefile:
         try:
             options.cachefile = config.get('cache', 'cachefile')
         except (NoOptionError, NoSectionError):
