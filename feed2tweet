@@ -62,7 +62,7 @@ def main():
     parser.add_argument('-a', '--all', action='store_true', default=False,
                         dest='all',
                         help='tweet all RSS items, regardless of cache')
-    parser.add_argument('-l', '--limit', dest='limit', default=10,
+    parser.add_argument('-l', '--limit', dest='limit', default=10, type=int,
                         help='tweet only LIMIT items (default: %(default)s)')
     parser.add_argument('--cachefile', dest='cachefile',
                         help='location of the cache file (default: %(default)s)')
