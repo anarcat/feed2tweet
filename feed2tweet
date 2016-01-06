@@ -102,7 +102,7 @@ def main():
             sys.exit(0)
     feed = feedparser.parse(options.rss_uri)
 
-    if options.hashtaglist is None:
+    if not options.hashtaglist:
         try:
             options.hashtaglist = config.get('hashtaglist', 'several_words_hashtags_list')
         except (NoOptionError, NoSectionError):
