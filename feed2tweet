@@ -16,7 +16,7 @@
 
 """Checks an RSS feed and posts new entries to twitter."""
 
-from ConfigParser import SafeConfigParser, NoOptionError
+from ConfigParser import SafeConfigParser, NoOptionError, NoSectionError
 from argparse import ArgumentParser
 import cPickle
 import codecs
@@ -141,7 +141,7 @@ def main():
     if options.cachefile is None:
         try:
             options.cachefile = config.get('cache', 'cachefile')
-        except NoOptionError:
+        except (NoOptionError, NoSectionError):
             options.cachefile = os.path.join(os.getenv('XDG_CACHE_HOME', '~/.cache'), 'feed2tweet.dat')
     options.cachefile = os.path.expanduser(options.cachefile)
 
@@ -155,7 +155,7 @@ def main():
     if options.hashtaglist is None:
         try:
             options.hashtaglist = config.get('hashtaglist', 'several_words_hashtags_list')
-        except NoOptionError:
+        except (NoOptionError, NoSectionError):
             options.hashtaglist = False
 
     # lots of scary warnings about possible security risk using this method
