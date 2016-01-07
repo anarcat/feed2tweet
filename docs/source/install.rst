@@ -24,7 +24,7 @@ From sources
 
 * Untar the tarball and go to the source directory with the following commands::
 
-    $ tar zxvf feed2tweet-0.1.tar.gz
+    $ tar zxvf feed2tweet-0.2.tar.gz
     $ cd feed2tweet
 
 * Next, to install Feed2tweet on your computer, type the following command with the root user::
