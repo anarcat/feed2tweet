@@ -124,9 +124,10 @@ def main():
          # we need cache['id'] to know what entries should be useful
         if cache['id']:
             listids = [entry['id'] for entry in entries]
-            # only consider entries newer than the one in cache
-            ptr = listids.index(cache['id']) + 1
-            entries = entries[ptr:options.limit]
+            if cache['id'] in listids:
+                # only consider entries newer than the one in cache
+                ptr = listids.index(cache['id']) + 1
+                entries = entries[ptr:options.limit]
 
     counter = len(entries)
     for entry in entries:
