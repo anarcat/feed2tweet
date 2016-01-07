@@ -14,7 +14,7 @@ For the full documentation, [read it online](https://feed2tweet.readthedocs.org/
   [Installation Guide](http://feed2tweet.readthedocs.org/en/latest/install.html)*
 
 
-        # tar zxvf feed2tweet-0.1.tar.gz
+        # tar zxvf feed2tweet-0.2.tar.gz
         # cd feed2tweet
         # python2.7 setup.py install
         # # or
@@ -45,7 +45,9 @@ For the full documentation, [read it online](https://feed2tweet.readthedocs.org/
 
 ### Authors
 
+Antoine Beaupré <anarcat@debian.org>
 Carl Chenet <chaica@ohmytux.com>
+
 First developed by Todd Eddy
 
 ### License
