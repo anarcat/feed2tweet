@@ -116,15 +116,22 @@ def main():
         severalwordshashtags = codecs.open(options.hashtaglist,
                                            encoding='utf-8').readlines()
         severalwordshashtags = [i.rstrip('\n') for i in severalwordshashtags]
+    # fixing rss2twitter most old bug
+    # reverse feed entries because most recent one should be sent as the last one in Twitter
     entries = feed['entries'][0:options.limit]
     entries.reverse()
+    if not options.all:
+         # we need cache['id'] to know what entries should be useful
+        if cache['id']:
+            listids = [entry['id'] for entry in entries]
+            # only consider entries newer than the one in cache
+            ptr = listids.index(cache['id']) + 1
+            entries = entries[ptr:options.limit]
 
-    cached = False
+    counter = len(entries)
     for entry in entries:
+        counter -= 1
         logging.debug('found feed entry %s, %s', entry['id'], entry['title'])
-        if not options.all and entry['id'] == cache['id']:
-            logging.debug('found known entry, stopped processing')
-            break
 
         rss = {
             'id': entry['id'],
@@ -157,9 +164,8 @@ def main():
 
             # We keep the first feed in the cache, to use feed2tweet
             # in normal mode the next time
-            if not cached:
+            if counter == 0:
                 cPickle.dump(rss, open(options.cachefile, 'wb'), -1)
-                cached = True
 
 if __name__ == "__main__":
     try:
