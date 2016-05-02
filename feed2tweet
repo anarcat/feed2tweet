@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # vim:ts=4:sw=4:ft=python:fileencoding=utf-8
 # Copyright © 2015 Carl Chenet <carl.chenet@ohmytux.com>
 # This program is free software: you can redistribute it and/or modify
@@ -16,9 +16,8 @@
 
 """Checks an RSS feed and posts new entries to twitter."""
 
-from ConfigParser import SafeConfigParser, NoOptionError, NoSectionError
+from configparser import SafeConfigParser, NoOptionError, NoSectionError
 from argparse import ArgumentParser
-import cPickle
 import codecs
 import logging
 import os
@@ -27,7 +26,9 @@ import sys
 import feedparser
 import tweepy
 
-__version__ = '0.2'
+from persistentlist.main import PersistentList
+
+__version__ = '0.3'
 
 config = None
 
@@ -43,7 +44,7 @@ def post_update(status):
     api = tweepy.API(auth)
     try:
         api.update_status(status)
-    except tweepy.error.TweepError, e:
+    except(tweepy.error.TweepError) as e:
         logging.warning("Error occurred while updating status: %s", e)
     else:
         return True
@@ -107,11 +108,12 @@ def main():
 
     # lots of scary warnings about possible security risk using this method
     # but for local use I'd rather do this than a try-catch with open()
-    if not os.path.isfile(options.cachefile):
-        # make a blank cache file
-        cPickle.dump({'id': None}, open(options.cachefile, 'wb'), -1)
+    #if not os.path.isfile(options.cachefile):
+    #    # make a blank cache file
+    #    cPickle.dump({'id': None}, open(options.cachefile, 'wb'), -1)
 
-    cache = cPickle.load(open(options.cachefile))
+    #cache = cPickle.load(open(options.cachefile))
+    cache = PersistentList(options.cachefile[0:-3], 100)
     if options.hashtaglist:
         severalwordshashtags = codecs.open(options.hashtaglist,
                                            encoding='utf-8').readlines()
@@ -120,18 +122,15 @@ def main():
     # reverse feed entries because most recent one should be sent as the last one in Twitter
     entries = feed['entries'][0:options.limit]
     entries.reverse()
+    totweet = []
     if not options.all:
-         # we need cache['id'] to know what entries should be useful
-        if cache['id']:
-            listids = [entry['id'] for entry in entries]
-            if cache['id'] in listids:
-                # only consider entries newer than the one in cache
-                ptr = listids.index(cache['id']) + 1
-                entries = entries[ptr:options.limit]
+        for i in entries:
+            if i['id'] not in cache:
+                totweet.append(i)
+    else:
+        totweet = entries
 
-    counter = len(entries)
-    for entry in entries:
-        counter -= 1
+    for entry in totweet:
         logging.debug('found feed entry %s, %s', entry['id'], entry['title'])
 
         rss = {
@@ -165,8 +164,9 @@ def main():
 
             # We keep the first feed in the cache, to use feed2tweet
             # in normal mode the next time
-            if counter == 0:
-                cPickle.dump(rss, open(options.cachefile, 'wb'), -1)
+            cache.add(rss['id'])
+    # do not forget to close cache (shelf object)
+    cache.close()
 
 if __name__ == "__main__":
     try:
