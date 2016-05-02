@@ -156,10 +156,7 @@ def main():
         else:
             rss['hashtag'] = ' '.join(['#%s' % i for i in entry['tags'][0]['term'].split()[:2]])
 
-        # limit size of the status - fix #19
         finalstring = '%s %s %s' % (rss['title'], rss['link'], rss['hashtag'])
-        if len(finalstring) > 140:
-            finalstring = finalstring[0:140]
         if options.dryrun:
             logging.warning(finalstring)
         else:
