@@ -155,12 +155,15 @@ def main():
             rss['hashtag'] = ' '.join(['#%s' % i for i in finalhashtags])
         else:
             rss['hashtag'] = ' '.join(['#%s' % i for i in entry['tags'][0]['term'].split()[:2]])
+
+        # limit size of the status - fix #19
+        finalstring = '%s %s %s' % (rss['title'], rss['link'], rss['hashtag'])
+        if len(finalstring) > 140:
+            finalstring = finalstring[0:140]
         if options.dryrun:
-            logging.warning('would post %s %s %s',
-                            rss['title'], rss['link'], rss['hashtag'])
+            logging.warning(finalstring)
         else:
-            post_update('%s %s %s'
-                        % (rss['title'], rss['link'], rss['hashtag']))
+            post_update(finalstring)
 
             # We keep the first feed in the cache, to use feed2tweet
             # in normal mode the next time
