@@ -11,8 +11,11 @@ In order to configure Feed2tweet, you need to create a feed2tweet.ini file (or a
     access_token=213416590-jgJnrJG5gz132nzerl5zerwi0ahmnwkfJFN9nr3j
     access_token_secret=3janlPMqDKlunJ4Hnr90k2bnfk3jfnwkFjeriFZERj32Z
 
+    [cache]
+    cachefile=cache.db
+
     [rss]
-    uri: https://www.journalduhacker.net/newest.rss
+    uri: https://www.journalduhacker.net/rss
 
     [hashtaglist]
     several_words_hashtags_list: severalwordshashtaglist.txt
@@ -23,6 +26,10 @@ For the [twitter] section:
 - consumer_secret: the Twitter consumer secret key (see your apps.twitter.com webpage)
 - access_token: the Twitter access token key (see your apps.twitter.com webpage)
 - access_token_secret: the Twitter access token secret key (see your apps.twitter.com webpage)
+
+For the [cache] section:
+
+- cachefile: the path to the cache file storing ids of already tweeted links
 
 For the [rss] section:
 

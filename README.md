@@ -7,18 +7,18 @@ For the full documentation, [read it online](https://feed2tweet.readthedocs.org/
 
 * Install Feed2tweet from PyPI
 
-        # pip install feed2tweet
+        # pip3.4 install feed2tweet
 
 * Install Feed2tweet from sources
   *(see the installation guide for full details)
   [Installation Guide](http://feed2tweet.readthedocs.org/en/latest/install.html)*
 
 
-        # tar zxvf feed2tweet-0.2.tar.gz
+        # tar zxvf feed2tweet-0.3.tar.gz
         # cd feed2tweet
-        # python2.7 setup.py install
+        # python3.4 setup.py install
         # # or
-        # python2.7 setup.py install --install-scripts=/usr/bin
+        # python3.4 setup.py install --install-scripts=/usr/bin
 
 ### Use Feed2tweet
 
@@ -31,10 +31,10 @@ For the full documentation, [read it online](https://feed2tweet.readthedocs.org/
         access_token_secret=3janlPMqDKlunJ4Hnr90k2bnfk3jfnwkFjeriFZERj32Z
 
         [cache]
-        cachefile=cache.dat
+        cachefile=cache.db
 
         [rss]
-        uri=https://www.journalduhacker.net/newest.rss
+        uri=https://www.journalduhacker.net/rss
 
         [hashtaglist]
         several_words_hashtags_list=severalwordshashtaglist.txt
