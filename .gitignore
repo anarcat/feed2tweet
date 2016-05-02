@@ -1,3 +1,4 @@
-config.ini
 feed2tweet.ini
-cache.dat
+__pycache__
+cache.db
+*.swp
