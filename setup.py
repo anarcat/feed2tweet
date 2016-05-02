@@ -1,4 +1,4 @@
-# Copyright 2015 Carl Chenet <carl.chenet@ohmytux.com>
+# Copyright 2016 Carl Chenet <carl.chenet@ohmytux.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
