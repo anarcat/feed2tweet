@@ -12,6 +12,6 @@ In order to know what's going to be sent to Twitter without actually doing it, u
 
 Debug option
 ============
-In order to increase the verbosity of what's Feed2tweet is doing, use the **--debug** option followed by the level of verbosity see [the the available different levels](https://docs.python.org/2/library/logging.html)::
+In order to increase the verbosity of what's Feed2tweet is doing, use the **--debug** option followed by the level of verbosity see [the the available different levels](https://docs.python.org/3/library/logging.html)::
 
     $ feed2tweet --debug debug -c /path/to/feed2tweet.ini
