@@ -29,7 +29,7 @@ For the [twitter] section:
 
 For the [cache] section:
 
-- cachefile: the path to the cache file storing ids of already tweeted links
+- cachefile: the path to the cache file storing ids of already tweeted links. This file should always use the .db extension.
 
 For the [rss] section:
 
