@@ -29,7 +29,7 @@ CLASSIFIERS = [
 
 setup(
     name='feed2tweet',
-    version='0.3',
+    version='0.4',
     license='GNU GPL v3',
     data_files = ['feed2tweet-sample.ini'],
     description='Parse rss feed and tweet new posts to Twitter',

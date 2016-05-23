@@ -16,6 +16,7 @@
 
 """Checks an RSS feed and posts new entries to twitter."""
 
+# standard libraires imports
 from configparser import SafeConfigParser, NoOptionError, NoSectionError
 from argparse import ArgumentParser
 import codecs
@@ -23,12 +24,12 @@ import logging
 import os
 import sys
 
+# 3rd party libraries imports
 import feedparser
+from persistentlist.main import PersistentList
 import tweepy
 
-from persistentlist.main import PersistentList
-
-__version__ = '0.3'
+__version__ = '0.4'
 
 config = None
 
