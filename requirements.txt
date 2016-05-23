@@ -1,0 +1,2 @@
+persistentlist>=0.2
+tweepy>=3.5.0
