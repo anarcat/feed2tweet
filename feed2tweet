@@ -26,7 +26,7 @@ import sys
 
 # 3rd party libraries imports
 import feedparser
-from persistentlist.main import PersistentList
+from persistentlist import PersistentList
 import tweepy
 
 __version__ = '0.4'
