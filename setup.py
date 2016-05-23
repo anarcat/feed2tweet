@@ -41,5 +41,5 @@ setup(
     download_url='https://github.com/chaica/feed2tweet',
     scripts=['feed2tweet'],
     packages=['persistentlist'],
-    install_requires=['feedparser', 'tweepy>=3.5.0'],
+    install_requires=['feedparser', 'persistentlist', 'tweepy'],
 )
