@@ -151,6 +151,7 @@ def main():
                                                       ''.join(element.split()))
         if severalwordsinhashtag:
             tmphashtags = tmphashtags.replace("'", "")
+            tmphashtags = tmphashtags.replace("-", "")
             finalhashtags = tmphashtags.split(' ')
             # issue with splitting hashtags in 2 words is right there
             rss['hashtag'] = ' '.join(['#%s' % i for i in finalhashtags])
