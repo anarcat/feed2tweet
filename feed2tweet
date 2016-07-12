@@ -29,7 +29,7 @@ import feedparser
 from persistentlist import PersistentList
 import tweepy
 
-__version__ = '0.4'
+__version__ = '0.5'
 
 config = None
 

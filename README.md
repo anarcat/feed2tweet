@@ -14,7 +14,7 @@ For the full documentation, [read it online](https://feed2tweet.readthedocs.org/
   [Installation Guide](http://feed2tweet.readthedocs.org/en/latest/install.html)*
 
 
-        # tar zxvf feed2tweet-0.4.tar.gz
+        # tar zxvf feed2tweet-0.5.tar.gz
         # cd feed2tweet
         # python3.4 setup.py install
         # # or
@@ -35,6 +35,7 @@ For the full documentation, [read it online](https://feed2tweet.readthedocs.org/
 
         [rss]
         uri=https://www.journalduhacker.net/rss
+        tweet={title} {link}
 
         [hashtaglist]
         several_words_hashtags_list=severalwordshashtaglist.txt
