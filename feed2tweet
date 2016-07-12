@@ -87,6 +87,13 @@ def main():
     if not config.read(os.path.expanduser(options.config)):
         sys.exit('Could not read config file')
 
+    # get the format of the tweet
+    if config.has_section('rss'):
+        if 'tweet' in config['rss']:
+            tweetformat = config.get('rss','tweet')
+        else:
+            sys.exit('You should define a format for your tweet with the keyword "tweet" in the [rss] section')
+
     if not options.cachefile:
         try:
             options.cachefile = config.get('cache', 'cachefile')
@@ -136,9 +143,6 @@ def main():
 
         rss = {
             'id': entry['id'],
-            'link': entry['link'],
-            'title': entry['title'],
-            'summary': entry['summary'],
         }
 
         severalwordsinhashtag = False
@@ -166,14 +170,38 @@ def main():
             else:
                 rss['hashtag'] = ' '.join(['#%s' % i for i in entry['tags'][0]['term'].split()[:2]])
 
-            finalstring = '%s %s %s' % (rss['title'], rss['link'], rss['hashtag'])
+        if options.dryrun:
+            logging.warning('tweetformat: {}'.format(tweetformat))
+        elements=[]
+        for i in tweetformat.split(' '):
+            tmpelement = ''
+            # if i is not an empty string
+            if i:
+                if i.startswith('{') and i.endswith('}'):
+                    tmpelement = i.strip('{}')
+                    elements.append(tmpelement)
+        if options.dryrun:
+            logging.warning('elements: {}'.format(elements))
+
+        # match elements of the tweet format string with available element in the RSS feed
+        matching = {}
+        for i in elements:
+            if i not in entry:
+                sys.exit('The element {} is not available in the RSS feed. The vailable ones are: {}'.format(i, [j for j in entry]))
+            matching[i] = entry[i] 
+        if options.dryrun:
+            logging.warning('matching: {}'.format(matching))
+        tweetwithnotag = tweetformat.format(**matching)
+        # only append hashtags if they exist
+        if rss['hashtag']:
+            finaltweet = ' '.join([tweetwithnotag, rss['hashtag']])
         else:
-            finalstring = '%s %s' % (rss['title'], rss['link'])
+            finaltweet = tweetwithnotag
 
         if options.dryrun:
-            logging.warning(finalstring)
+            logging.warning(finaltweet)
         else:
-            post_update(finalstring)
+            post_update(finaltweet)
 
             # We keep the first feed in the cache, to use feed2tweet
             # in normal mode the next time
