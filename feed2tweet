@@ -140,25 +140,36 @@ def main():
             'title': entry['title'],
             'summary': entry['summary'],
         }
-        severalwordsinhashtag = False
-        if options.hashtaglist:
-            prehashtags = entry['tags'][0]['term']
-            tmphashtags = entry['tags'][0]['term']
-            for element in severalwordshashtags:
-                if element in prehashtags:
-                    severalwordsinhashtag = True
-                    tmphashtags = prehashtags.replace(element,
-                                                      ''.join(element.split()))
-        if severalwordsinhashtag:
-            tmphashtags = tmphashtags.replace("'", "")
-            tmphashtags = tmphashtags.replace("-", "")
-            finalhashtags = tmphashtags.split(' ')
-            # issue with splitting hashtags in 2 words is right there
-            rss['hashtag'] = ' '.join(['#%s' % i for i in finalhashtags])
-        else:
-            rss['hashtag'] = ' '.join(['#%s' % i for i in entry['tags'][0]['term'].split()[:2]])
 
-        finalstring = '%s %s %s' % (rss['title'], rss['link'], rss['hashtag'])
+        severalwordsinhashtag = False
+        # lets see if the rss feed has hashtag
+        if 'tags' in entry:
+            hastags = True
+        else:
+            hastags = False
+
+        if hastags:
+            if options.hashtaglist:
+                prehashtags = entry['tags'][0]['term']
+                tmphashtags = entry['tags'][0]['term']
+                for element in severalwordshashtags:
+                    if element in prehashtags:
+                        severalwordsinhashtag = True
+                        tmphashtags = prehashtags.replace(element,
+                                                          ''.join(element.split()))
+            if severalwordsinhashtag:
+                tmphashtags = tmphashtags.replace("'", "")
+                tmphashtags = tmphashtags.replace("-", "")
+                finalhashtags = tmphashtags.split(' ')
+                # issue with splitting hashtags in 2 words is right there
+                rss['hashtag'] = ' '.join(['#%s' % i for i in finalhashtags])
+            else:
+                rss['hashtag'] = ' '.join(['#%s' % i for i in entry['tags'][0]['term'].split()[:2]])
+
+            finalstring = '%s %s %s' % (rss['title'], rss['link'], rss['hashtag'])
+        else:
+            finalstring = '%s %s' % (rss['title'], rss['link'])
+
         if options.dryrun:
             logging.warning(finalstring)
         else:
