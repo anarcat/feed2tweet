@@ -16,6 +16,7 @@ In order to configure Feed2tweet, you need to create a feed2tweet.ini file (or a
 
     [rss]
     uri: https://www.journalduhacker.net/rss
+    tweet: {title} {link}
 
     [hashtaglist]
     several_words_hashtags_list: severalwordshashtaglist.txt
@@ -34,6 +35,7 @@ For the [cache] section:
 For the [rss] section:
 
 - uri: the url of the rss feed to parse
+- tweet: format of the tweet you want to post. It should use existing entries of the RSS fields like {title} or {link}. Launch it with this field empty to display all available entries.
 
 For the [hashtaglist] section:
 
