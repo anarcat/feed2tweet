@@ -193,7 +193,7 @@ def main():
             logging.warning('matching: {}'.format(matching))
         tweetwithnotag = tweetformat.format(**matching)
         # only append hashtags if they exist
-        if rss['hashtag']:
+        if 'hashtag' in rss:
             finaltweet = ' '.join([tweetwithnotag, rss['hashtag']])
         else:
             finaltweet = tweetwithnotag
