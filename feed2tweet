@@ -191,7 +191,7 @@ def main():
         matching = {}
         for i in elements:
             if i not in entry:
-                sys.exit('The element {} is not available in the RSS feed. The vailable ones are: {}'.format(i, [j for j in entry]))
+                sys.exit('The element {} is not available in the RSS feed. The available ones are: {}'.format(i, [j for j in entry]))
             matching[i] = entry[i] 
         if options.dryrun:
             logging.warning('matching: {}'.format(matching))
