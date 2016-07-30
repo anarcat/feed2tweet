@@ -5,3 +5,5 @@ cache.db
 *.pyc
 bloglinuxjobsfr.ini
 config.ini
+bloglinuxjobsconfig.ini
+bloglinuxjobsfrcache.db
