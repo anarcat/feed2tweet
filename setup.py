@@ -29,7 +29,7 @@ CLASSIFIERS = [
 
 setup(
     name='feed2tweet',
-    version='0.6',
+    version='0.7',
     license='GNU GPL v3',
     description='Parse rss feed and tweet new posts to Twitter',
     long_description='Parse rss feed and tweet new posts to Twitter',
@@ -38,6 +38,7 @@ setup(
     url = 'https://github.com/chaica/feed2tweet',
     classifiers=CLASSIFIERS,
     download_url='https://github.com/chaica/feed2tweet',
+    packages=['retweet'],
     scripts=['feed2tweet'],
     install_requires=['feedparser', 'persistentlist', 'tweepy'],
 )
