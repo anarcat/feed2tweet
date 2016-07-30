@@ -33,8 +33,6 @@ from feed2tweet.confparse import ConfParse
 from feed2tweet.removeduplicates import RemoveDuplicates
 from feed2tweet.tweetpost import TweetPost
 
-config = None
-
 class Main(object):
     '''Main class of Feed2tweet'''
 
@@ -46,46 +44,9 @@ class Main(object):
         clip = CliParse()
         options = clip.options
         logging.basicConfig(level=options.log_level.upper(), format='%(message)s')
-        #config = SafeConfigParser()
-        #if not config.read(os.path.expanduser(options.config)):
-        #    sys.exit('Could not read config file')
-
-        ## get the format of the tweet
-        #if config.has_section('rss'):
-        #    if 'tweet' in config['rss']:
-        #        tweetformat = config.get('rss','tweet')
-        #    else:
-        #        sys.exit('You should define a format for your tweet with the keyword "tweet" in the [rss] section')
-
-        #if not options.cachefile:
-        #    try:
-        #        options.cachefile = config.get('cache', 'cachefile')
-        #    except (NoOptionError, NoSectionError):
-        #        options.cachefile = os.path.join(os.getenv('XDG_CACHE_HOME', '~/.cache'), 'feed2tweet.dat')
-        #options.cachefile = os.path.expanduser(options.cachefile)
-
-        #if not options.rss_uri:
-        #    try:
-        #        options.rss_uri = config.get('rss', 'uri')
-        #    except (NoOptionError, NoSectionError):
-        #        sys.exit('uri parameter in the [rss] section of the configuration file is mandatory. Exiting.')
-        #feed = feedparser.parse(options.rss_uri)
-
-        #if not options.hashtaglist:
-        #    try:
-        #        options.hashtaglist = config.get('hashtaglist', 'several_words_hashtags_list')
-        #    except (NoOptionError, NoSectionError):
-        #        options.hashtaglist = False
         cfgp = ConfParse(options)
         options, config, tweetformat, feed = cfgp.confvalues
 
-        # lots of scary warnings about possible security risk using this method
-        # but for local use I'd rather do this than a try-catch with open()
-        #if not os.path.isfile(options.cachefile):
-        #    # make a blank cache file
-        #    cPickle.dump({'id': None}, open(options.cachefile, 'wb'), -1)
-
-        #cache = cPickle.load(open(options.cachefile))
         cache = PersistentList(options.cachefile[0:-3], 100)
         if options.hashtaglist:
             severalwordshashtags = codecs.open(options.hashtaglist,
