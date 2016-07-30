@@ -1,21 +1,23 @@
+crypto-monnaie
 distributions linux
 financement participatif
+gestion de configuration
 intégration continue
+journal du hacker
+journal du pirate
 libertés individuelles
+lignes de commande
 logiciel d'entreprise
 messagerie instantanée
+node.js
 objet connecté
 offre d'emploi
 open data
 open hardware
 open source
-réseaux sociaux
-vie privée
-gestion de configuration
-journal du hacker
-journal du pirate
-lignes de commande
 pensées du libre
 philosophie du Libre
+réseaux sociaux
 ruby on rails
 système de fichiers
+vie privée
