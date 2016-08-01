@@ -128,7 +128,7 @@ class Main(object):
             if options.dryrun:
                 logging.warning(finaltweet)
             else:
-                TweetPost(finaltweet)
+                TweetPost(config, finaltweet)
 
                 # We keep the first feed in the cache, to use feed2tweet
                 # in normal mode the next time

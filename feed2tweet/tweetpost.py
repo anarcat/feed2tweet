@@ -47,7 +47,7 @@ class TweetPost(object):
         auth.set_access_token(access_token, access_token_secret)
         api = tweepy.API(auth)
         try:
-            api.update_status(status)
+            api.update_status(self.tweet)
         except(tweepy.error.TweepError) as e:
             logging.warning("Error occurred while updating status: %s", e)
         else:
