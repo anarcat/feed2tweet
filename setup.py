@@ -38,7 +38,7 @@ setup(
     url = 'https://github.com/chaica/feed2tweet',
     classifiers=CLASSIFIERS,
     download_url='https://github.com/chaica/feed2tweet',
-    packages=['retweet'],
+    packages=['feed2tweet'],
     scripts=['feed2tweet'],
     install_requires=['feedparser', 'persistentlist', 'tweepy'],
 )
