@@ -25,7 +25,6 @@ import sys
 
 # 3rd party libraries imports
 import feedparser
-from persistentlist import PersistentList
 import tweepy
 
 class TweetPost(object):
