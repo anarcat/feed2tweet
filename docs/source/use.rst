@@ -14,7 +14,7 @@ Debug option
 ============
 In order to increase the verbosity of what's Feed2tweet is doing, use the **--debug** option followed by the level of verbosity see [the the available different levels](https://docs.python.org/3/library/logging.html)::
 
-    $ feed2tweet --debug debug -c /path/to/feed2tweet.ini
+    $ feed2tweet --debug -c /path/to/feed2tweet.ini
 
 Run Feed2tweet on a regular basis
 =================================
