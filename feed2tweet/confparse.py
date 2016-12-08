@@ -19,6 +19,7 @@
 # standard library imports
 from configparser import SafeConfigParser, NoOptionError, NoSectionError
 import os
+import os.path
 import sys
 
 # 3rd party library imports
@@ -50,8 +51,10 @@ class ConfParse(object):
             try:
                 self.options.cachefile = config.get('cache', 'cachefile')
             except (NoOptionError, NoSectionError):
-                self.options.cachefile = os.path.join(os.getenv('XDG_CACHE_HOME', '~/.cache'), 'feed2tweet.dat')
-        self.options.cachefile = os.path.expanduser(self.options.cachefile)
+                sys.exit('You should provide an absolute path to the cache file in the [cache] section')
+            finally:
+                if not os.path.isabs(self.options.cachefile):
+                    sys.exit('You should provide an absolute path to the cache file in the [cache] section')
 
         if not self.options.rss_uri:
             try:

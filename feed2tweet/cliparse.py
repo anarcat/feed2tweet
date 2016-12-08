@@ -64,6 +64,9 @@ class CliParse(object):
                             dest='rss_uri', metavar='http://...')
         self.opts = parser.parse_args()
 
+        if self.opts.cachefile and not os.path.isabs(self.opts.cachefile):
+            sys.exit('You should provide an absolute path for the cache file')    
+
     @property
     def options(self):
         '''return the path to the config file'''
