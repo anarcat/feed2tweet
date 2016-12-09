@@ -60,6 +60,9 @@ class CliParse(object):
                             help='enable debug output, work on log level DEBUG')
         parser.add_argument('--hashtaglist', dest='hashtaglist',
                             help='a list of hashtag to match')
+        parser.add_argument('-p', '--populate-cache', action='store_true', default=False,
+                            dest='populate',
+                            help='populate RSS entries in cache without actually posting them to Twitter')
         parser.add_argument('-r', '--rss', help='the RSS feed URL to fetch items from',
                             dest='rss_uri', metavar='http://...')
         self.opts = parser.parse_args()

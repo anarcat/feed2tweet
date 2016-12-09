@@ -128,10 +128,12 @@ class Main(object):
             if options.dryrun:
                 logging.warning(finaltweet)
             else:
-                TweetPost(config, finaltweet)
-
-                # We keep the first feed in the cache, to use feed2tweet
-                # in normal mode the next time
-                cache.add(rss['id'])
+                if not options.populate:
+                    TweetPost(config, finaltweet)
+                else:
+                    print('populating RSS entry {}'.format(rss['id']))
+                    # We keep the first feed in the cache, to use feed2tweet
+                    # in normal mode the next time
+                    cache.append(rss['id'])
         # do not forget to close cache (shelf object)
         cache.close()
