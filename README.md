@@ -14,7 +14,7 @@ For the full documentation, [read it online](https://feed2tweet.readthedocs.org/
   [Installation Guide](http://feed2tweet.readthedocs.org/en/latest/install.html)*
 
 
-        # tar zxvf feed2tweet-0.7.tar.gz
+        # tar zxvf feed2tweet-0.8.tar.gz
         # cd feed2tweet
         # python3.4 setup.py install
         # # or
