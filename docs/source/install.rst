@@ -29,7 +29,7 @@ From sources
 
 * Next, to install Feed2tweet on your computer, type the following command with the root user::
 
-    $ python3.4 setup.py install
+    $ python3 setup.py install
     $ # or
-    $ python3.4 setup.py install --install-scripts=/usr/bin
+    $ python3 setup.py install --install-scripts=/usr/bin
 

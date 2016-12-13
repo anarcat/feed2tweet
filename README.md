@@ -7,7 +7,7 @@ For the full documentation, [read it online](https://feed2tweet.readthedocs.org/
 
 * Install Feed2tweet from PyPI
 
-        # pip3.4 install feed2tweet
+        # pip3 install feed2tweet
 
 * Install Feed2tweet from sources
   *(see the installation guide for full details)
@@ -16,9 +16,9 @@ For the full documentation, [read it online](https://feed2tweet.readthedocs.org/
 
         # tar zxvf feed2tweet-0.8.tar.gz
         # cd feed2tweet
-        # python3.4 setup.py install
+        # python3 setup.py install
         # # or
-        # python3.4 setup.py install --install-scripts=/usr/bin
+        # python3 setup.py install --install-scripts=/usr/bin
 
 ### Use Feed2tweet
 
