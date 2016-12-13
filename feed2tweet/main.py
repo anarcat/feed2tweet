@@ -31,6 +31,7 @@ import tweepy
 from feed2tweet.cliparse import CliParse
 from feed2tweet.confparse import ConfParse
 from feed2tweet.removeduplicates import RemoveDuplicates
+from feed2tweet.addtags import AddTags
 from feed2tweet.tweetpost import TweetPost
 
 class Main(object):
@@ -79,26 +80,32 @@ class Main(object):
                 hastags = False
 
             if hastags:
-                if options.hashtaglist:
-                    prehashtags = entry['tags'][0]['term']
-                    tmphashtags = entry['tags'][0]['term']
-                    for element in severalwordshashtags:
-                        if element in prehashtags:
-                            severalwordsinhashtag = True
-                            tmphashtags = prehashtags.replace(element,
-                                                              ''.join(element.split()))
-                if severalwordsinhashtag:
-                    # remove ' from hashtag
-                    tmphashtags = tmphashtags.replace("'", "")
-                    # remove - from hashtag
-                    tmphashtags = tmphashtags.replace("-", "")
-                    # remove . from hashtag
-                    tmphashtags = tmphashtags.replace(".", "")
-                    finalhashtags = tmphashtags.split(' ')
-                    # issue with splitting hashtags in 2 words is right there
-                    rss['hashtag'] = ' '.join(['#%s' % i for i in finalhashtags])
-                else:
-                    rss['hashtag'] = ' '.join(['#%s' % i for i in entry['tags'][0]['term'].split()[:2]])
+                rss['hashtags'] = []
+                for i, _ in enumerate(entry['tags']):
+                    if options.hashtaglist:
+                        prehashtags = entry['tags'][i]['term']
+                        tmphashtags = entry['tags'][i]['term']
+                        for element in severalwordshashtags:
+                            if element in prehashtags:
+                                severalwordsinhashtag = True
+                                tmphashtags = prehashtags.replace(element,
+                                                                  ''.join(element.split()))
+                    # replace characters stopping a word from being a hashtag
+                    if severalwordsinhashtag:
+                        # remove ' from hashtag
+                        tmphashtags = tmphashtags.replace("'", "")
+                        # remove - from hashtag
+                        tmphashtags = tmphashtags.replace("-", "")
+                        # remove . from hashtag
+                        tmphashtags = tmphashtags.replace(".", "")
+                        # remove space from hashtag
+                        finalhashtags = tmphashtags.replace(" ", "")
+                        rss['hashtags'].append('#{}'.format(finalhashtags))
+                    else:
+                        nospace = ''.join(entry['tags'][i]['term'])
+                        # remove space from hashtag
+                        nospace = nospace.replace(" ", "")
+                        rss['hashtags'].append('#{}'.format(nospace))
 
             elements=[]
             for i in tweetformat.split(' '):
@@ -116,15 +123,16 @@ class Main(object):
                     sys.exit('The element {} is not available in the RSS feed. The available ones are: {}'.format(i, [j for j in entry]))
                 matching[i] = entry[i] 
             tweetwithnotag = tweetformat.format(**matching)
-            # only append hashtags if they exist
-            if 'hashtag' in rss:
-                finaltweet = ' '.join([tweetwithnotag, rss['hashtag']])
-            else:
-                finaltweet = tweetwithnotag
             # remove duplicates from the final tweet
-            dedup = RemoveDuplicates(finaltweet)
-            finaltweet = dedup.finaltweet
-
+            dedup = RemoveDuplicates(tweetwithnotag)
+            # only append hashtags if they exist
+            # remove last tags if tweet too long
+            if 'hashtags' in rss:
+                addtag = AddTags(dedup.finaltweet, rss['hashtags'])
+                finaltweet = addtag.finaltweet
+            else:
+                finaltweet = dedup
+            
             if options.dryrun:
                 logging.warning(finaltweet)
             else:
@@ -132,8 +140,7 @@ class Main(object):
                     TweetPost(config, finaltweet)
                 else:
                     print('populating RSS entry {}'.format(rss['id']))
-                    # We keep the first feed in the cache, to use feed2tweet
-                    # in normal mode the next time
-                    cache.append(rss['id'])
+                # in both cas we store the id of the sent tweet
+                cache.append(rss['id'])
         # do not forget to close cache (shelf object)
         cache.close()
