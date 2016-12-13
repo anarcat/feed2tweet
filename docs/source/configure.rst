@@ -43,7 +43,7 @@ For the [hashtaglist] section:
 
 How to display available sections of the rss feed
 =================================================
-Starting from 0.8, Feed2tweet offers the **--rss-sections** command line option to display the available section of the rss feed::
+Starting from 0.8, Feed2tweet offers the **--rss-sections** command line option to display the available section of the rss feed and exits::
 
     $ feed2tweet --rss-sections -c feed2tweet.ini
     The following sections are available in this RSS feed: ['title', 'comments', 'authors', 'link', 'author', 'summary', 'links', 'tags', id', 'author_detail', 'published']
