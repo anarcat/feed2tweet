@@ -40,3 +40,10 @@ For the [rss] section:
 For the [hashtaglist] section:
 
 - several_words_hashtags_list: a path to the file containing hashtags in two or more words. By default Feed2tweet adds a # before every words of a hashtag.
+
+How to display available sections of the rss feed
+=================================================
+Starting from 0.8, Feed2tweet offers the **--rss-sections** command line option to display the available section of the rss feed::
+
+    $ feed2tweet --rss-sections -c feed2tweet.ini
+    The following sections are available in this RSS feed: ['title', 'comments', 'authors', 'link', 'author', 'summary', 'links', 'tags', id', 'author_detail', 'published']

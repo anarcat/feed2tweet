@@ -25,3 +25,19 @@ Debug option
 In order to increase the verbosity of what's Feed2tweet is doing, use the **--debug** option followed by the level of verbosity see [the the available different levels](https://docs.python.org/3/library/logging.html)::
 
     $ feed2tweet --debug -c /path/to/feed2tweet.ini
+
+Populate the cache file without posting tweets
+==============================================
+Starting from 0.8, Feed2tweet offers the **--populate-cache** command line option to populate the cache file without posting to Twitter::
+
+    $ feed2tweet --populate-cache -c feed2tweet.ini
+    populating RSS entry https://www.journalduhacker.net/s/65krkk
+    populating RSS entry https://www.journalduhacker.net/s/co2es0
+    populating RSS entry https://www.journalduhacker.net/s/la2ihl
+    populating RSS entry https://www.journalduhacker.net/s/stfwtx
+    populating RSS entry https://www.journalduhacker.net/s/qq1wte
+    populating RSS entry https://www.journalduhacker.net/s/y8mzrp
+    populating RSS entry https://www.journalduhacker.net/s/ozjqv0
+    populating RSS entry https://www.journalduhacker.net/s/6ev8jz
+    populating RSS entry https://www.journalduhacker.net/s/gezvnv
+    populating RSS entry https://www.journalduhacker.net/s/lqswmz
