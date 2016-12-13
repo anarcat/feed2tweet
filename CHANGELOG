@@ -1,0 +1,66 @@
+ Change Log
+All notable changes to this project will be documented in this file.
+
+## [0.8] - 2016-12-13
+### Added
+- new command line option --populate-cache option to feed the cache file without posting to twitter
+- new command line option --rss-sections to print sections of the current rss feed for the tweet format (see documentation)
+
+### Changed
+- now smartly manage adding hashtags given the length of the tweet
+- now depends on PersistentList >= 0.4
+
+## [0.7] - 2016-08-01
+### Changed
+- now manage hashtag with mark inside.
+- smartly remove duplicate link in a tweet
+- splitted code from old feed2tweet script into multiple files
+
+## [0.6] - 2016-07-15
+### Changed
+- bugfix: manage case if no tag is provided by the rss feed
+
+## [0.5] - 2016-07-14
+### Added
+- use the tweet option in the [rss] section to define the tweet template you wish, using the fields offered by the RSS feed
+
+### Changed
+- remove hyphen for entry in hashtag list
+- bugfix: manage the case if no tag is used
+
+## [0.4] - 2016-05-24       
+### Added
+- now depends on PersistentList to store sent links
+
+### Changed
+- maintenance version
+
+## [0.3] - 2016-05-03
+### Added
+- now only runs with >= python3.4
+- the cache file is now a python shelve object
+
+### Changed
+- fixes a nasty bug when RSS entry order is modified betweet two passes
+
+## [0.2] - 2015-01-07
+### Added
+- new command line option -r or --dry-run to simulate execution of Feed2tweet, contributed by Antoine Beaupré
+- new command line option -d or --debug to increase verbosity of the execution of Feed2tweet, contributed by Antoine Beaupré
+- new command line option -v or --verbose to follow the execution of Feed2tweet, contributed by Antoine Beaupré
+- new command line option --cachefile to get the path of the cache file, contributed by Antoine Beaupré
+- new command line option --hashtaglist to get the path of the hash tag composed by multiple words, contributed by Antoine Beaupré
+- new command line option -r or --rss to get the uri of the RSS feed, contributed by Antoine Beaupré
+- now the configuration file path default to XDG_CONFIG_HOME or ~/.config/feed2tweet.ini, contributed by Antoine Beaupré
+
+### Changed
+- bug fix: Feed2tweet now manages multiple feed entries in normal mode (previously only one each execution)
+- bug fix: -a/--all option now returns entries in the correct order (was upside/down before)
+
+## [0.1] - 2015-12-27
+### Added 
+- support for hash tags with multiple word
+- official documentation now at Readthedocs 
+
+### Changed
+- forking from rss2twitter
