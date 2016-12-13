@@ -57,7 +57,15 @@ class Main(object):
         # reverse feed entries because most recent one should be sent as the last one in Twitter
         entries = feed['entries'][0:options.limit]
         entries.reverse()
+        # --rss-sections option: print rss sections and exit
+        if options.rsssections:
+            if entries:
+                print('The following sections are available in this RSS feed: {}'.format([j for j in entries[0]]))
+                sys.exit(0)
+            else:
+                sys.exit('Could not parse the section of the rss feed')
         totweet = []
+        # cache the ids of last rss feeds
         if not options.all:
             for i in entries:
                 if i['id'] not in cache:
@@ -67,6 +75,7 @@ class Main(object):
 
         for entry in totweet:
             logging.debug('found feed entry %s, %s', entry['id'], entry['title'])
+
 
             rss = {
                 'id': entry['id'],

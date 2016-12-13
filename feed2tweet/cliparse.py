@@ -21,7 +21,7 @@ from argparse import ArgumentParser
 import os.path
 import sys
 
-__version__ = '0.7'
+__version__ = '0.8'
 
 class CliParse(object):
     '''CliParse class'''
@@ -65,6 +65,9 @@ class CliParse(object):
                             help='populate RSS entries in cache without actually posting them to Twitter')
         parser.add_argument('-r', '--rss', help='the RSS feed URL to fetch items from',
                             dest='rss_uri', metavar='http://...')
+        parser.add_argument('--rss-sections', action='store_true', default=False,
+                            dest='rsssections',
+                            help='print the available sections of the rss feed to be used in the tweet template')
         self.opts = parser.parse_args()
 
         if self.opts.cachefile and not os.path.isabs(self.opts.cachefile):
