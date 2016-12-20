@@ -28,10 +28,11 @@ from persistentlist import PersistentList
 import tweepy
 
 # app libraries imports
+from feed2tweet.addtags import AddTags
 from feed2tweet.cliparse import CliParse
 from feed2tweet.confparse import ConfParse
+from feed2tweet.filterentry import FilterEntry
 from feed2tweet.removeduplicates import RemoveDuplicates
-from feed2tweet.addtags import AddTags
 from feed2tweet.tweetpost import TweetPost
 
 class Main(object):
@@ -43,113 +44,120 @@ class Main(object):
     def main(self):
         """The main function."""
         clip = CliParse()
-        options = clip.options
-        logging.basicConfig(level=options.log_level.upper(), format='%(message)s')
-        cfgp = ConfParse(options)
-        options, config, tweetformat, feed = cfgp.confvalues
-
-        cache = PersistentList(options.cachefile[0:-3], 100)
-        if options.hashtaglist:
-            severalwordshashtags = codecs.open(options.hashtaglist,
-                                               encoding='utf-8').readlines()
-            severalwordshashtags = [i.rstrip('\n') for i in severalwordshashtags]
-        # fixing rss2twitter most old bug
-        # reverse feed entries because most recent one should be sent as the last one in Twitter
-        entries = feed['entries'][0:options.limit]
-        entries.reverse()
-        # --rss-sections option: print rss sections and exit
-        if options.rsssections:
-            if entries:
-                print('The following sections are available in this RSS feed: {}'.format([j for j in entries[0]]))
-                sys.exit(0)
-            else:
-                sys.exit('Could not parse the section of the rss feed')
-        totweet = []
-        # cache the ids of last rss feeds
-        if not options.all:
-            for i in entries:
-                if i['id'] not in cache:
-                    totweet.append(i)
-        else:
-            totweet = entries
-
-        for entry in totweet:
-            logging.debug('found feed entry %s, %s', entry['id'], entry['title'])
-
-
-            rss = {
-                'id': entry['id'],
-            }
-
-            severalwordsinhashtag = False
-            # lets see if the rss feed has hashtag
-            if 'tags' in entry:
-                hastags = True
-            else:
-                hastags = False
-
-            if hastags:
-                rss['hashtags'] = []
-                for i, _ in enumerate(entry['tags']):
-                    if options.hashtaglist:
-                        prehashtags = entry['tags'][i]['term']
-                        tmphashtags = entry['tags'][i]['term']
-                        for element in severalwordshashtags:
-                            if element in prehashtags:
-                                severalwordsinhashtag = True
-                                tmphashtags = prehashtags.replace(element,
-                                                                  ''.join(element.split()))
-                    # replace characters stopping a word from being a hashtag
-                    if severalwordsinhashtag:
-                        # remove ' from hashtag
-                        tmphashtags = tmphashtags.replace("'", "")
-                        # remove - from hashtag
-                        tmphashtags = tmphashtags.replace("-", "")
-                        # remove . from hashtag
-                        tmphashtags = tmphashtags.replace(".", "")
-                        # remove space from hashtag
-                        finalhashtags = tmphashtags.replace(" ", "")
-                        rss['hashtags'].append('#{}'.format(finalhashtags))
-                    else:
-                        nospace = ''.join(entry['tags'][i]['term'])
-                        # remove space from hashtag
-                        nospace = nospace.replace(" ", "")
-                        rss['hashtags'].append('#{}'.format(nospace))
-
-            elements=[]
-            for i in tweetformat.split(' '):
-                tmpelement = ''
-                # if i is not an empty string
-                if i:
-                    if i.startswith('{') and i.endswith('}'):
-                        tmpelement = i.strip('{}')
-                        elements.append(tmpelement)
-
-            # match elements of the tweet format string with available element in the RSS feed
-            matching = {}
-            for i in elements:
-                if i not in entry:
-                    sys.exit('The element {} is not available in the RSS feed. The available ones are: {}'.format(i, [j for j in entry]))
-                matching[i] = entry[i] 
-            tweetwithnotag = tweetformat.format(**matching)
-            # remove duplicates from the final tweet
-            dedup = RemoveDuplicates(tweetwithnotag)
-            # only append hashtags if they exist
-            # remove last tags if tweet too long
-            if 'hashtags' in rss:
-                addtag = AddTags(dedup.finaltweet, rss['hashtags'])
-                finaltweet = addtag.finaltweet
-            else:
-                finaltweet = dedup
-            
-            if options.dryrun:
-                logging.warning(finaltweet)
-            else:
-                if not options.populate:
-                    TweetPost(config, finaltweet)
+        clioptions = clip.options
+        logging.basicConfig(level=clioptions.log_level.upper(), format='%(message)s')
+        # iterating over the different configuration files
+        cfgp = ConfParse(clioptions)
+        confs = cfgp.confvalues
+        for conf in confs:
+            options = conf[0]
+            config = conf[1]
+            tweetformat = conf[2]
+            feed = conf[3]
+            # open the persistent list
+            cache = PersistentList(options['cachefile'][0:-3], 100)
+            if options['hashtaglist']:
+                severalwordshashtags = codecs.open(options['hashtaglist'],
+                                                   encoding='utf-8').readlines()
+                severalwordshashtags = [i.rstrip('\n') for i in severalwordshashtags]
+            # fixing rss2twitter most old bug
+            # reverse feed entries because most recent one should be sent as the last one in Twitter
+            entries = feed['entries'][0:clioptions.limit]
+            entries.reverse()
+            # --rss-sections option: print rss sections and exit
+            if clioptions.rsssections:
+                if entries:
+                    print('The following sections are available in this RSS feed: {}'.format([j for j in entries[0]]))
+                    sys.exit(0)
                 else:
-                    print('populating RSS entry {}'.format(rss['id']))
-                # in both cas we store the id of the sent tweet
-                cache.append(rss['id'])
-        # do not forget to close cache (shelf object)
-        cache.close()
+                    sys.exit('Could not parse the section of the rss feed')
+            totweet = []
+            # cache the ids of last rss feeds
+            if not clioptions.all:
+                for i in entries:
+                    if i['id'] not in cache:
+                        totweet.append(i)
+            else:
+                totweet = entries
+
+            for entry in totweet:
+                logging.debug('found feed entry %s, %s', entry['id'], entry['title'])
+
+
+                rss = {
+                    'id': entry['id'],
+                }
+
+                severalwordsinhashtag = False
+                # lets see if the rss feed has hashtag
+                if 'tags' in entry:
+                    hastags = True
+                else:
+                    hastags = False
+
+                if hastags:
+                    rss['hashtags'] = []
+                    for i, _ in enumerate(entry['tags']):
+                        if 'hashtaglist' in options:
+                            prehashtags = entry['tags'][i]['term']
+                            tmphashtags = entry['tags'][i]['term']
+                            for element in severalwordshashtags:
+                                if element in prehashtags:
+                                    severalwordsinhashtag = True
+                                    tmphashtags = prehashtags.replace(element,
+                                                                      ''.join(element.split()))
+                        # replace characters stopping a word from being a hashtag
+                        if severalwordsinhashtag:
+                            # remove ' from hashtag
+                            tmphashtags = tmphashtags.replace("'", "")
+                            # remove - from hashtag
+                            tmphashtags = tmphashtags.replace("-", "")
+                            # remove . from hashtag
+                            tmphashtags = tmphashtags.replace(".", "")
+                            # remove space from hashtag
+                            finalhashtags = tmphashtags.replace(" ", "")
+                            rss['hashtags'].append('#{}'.format(finalhashtags))
+                        else:
+                            nospace = ''.join(entry['tags'][i]['term'])
+                            # remove space from hashtag
+                            nospace = nospace.replace(" ", "")
+                            rss['hashtags'].append('#{}'.format(nospace))
+
+                elements=[]
+                for i in tweetformat.split(' '):
+                    tmpelement = ''
+                    # if i is not an empty string
+                    if i:
+                        if i.startswith('{') and i.endswith('}'):
+                            tmpelement = i.strip('{}')
+                            elements.append(tmpelement)
+
+                # match elements of the tweet format string with available element in the RSS feed
+                fe = FilterEntry(elements, entry, options)
+                entrytosend = fe.finalentry
+                if entrytosend:
+                    tweetwithnotag = tweetformat.format(**entrytosend)
+                    # remove duplicates from the final tweet
+                    dedup = RemoveDuplicates(tweetwithnotag)
+                    # only append hashtags if they exist
+                    # remove last tags if tweet too long
+                    if 'hashtags' in rss:
+                        addtag = AddTags(dedup.finaltweet, rss['hashtags'])
+                        finaltweet = addtag.finaltweet
+                    else:
+                        finaltweet = dedup
+                    
+                if clioptions.dryrun:
+                    if entrytosend:
+                        logging.warning(finaltweet)
+                    else:
+                        logging.warning('entry does not meet pattern criteria')
+                else:
+                    if entrytosend and not clioptions.populate:
+                        TweetPost(config, finaltweet)
+                    else:
+                        print('populating RSS entry {}'.format(rss['id']))
+                    # in both cas we store the id of the sent tweet
+                    cache.append(rss['id'])
+            # do not forget to close cache (shelf object)
+            cache.close()

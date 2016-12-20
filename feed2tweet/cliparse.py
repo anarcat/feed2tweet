@@ -18,6 +18,7 @@
 
 # standard library imports
 from argparse import ArgumentParser
+import glob
 import os.path
 import sys
 
@@ -40,6 +41,8 @@ class CliParse(object):
         parser.add_argument('-c', '--config',
                             default=os.getenv('XDG_CONFIG_HOME',
                                               '~/.config/feed2tweet.ini'),
+                            nargs='+',
+                            dest="config",
                             help='Location of config file (default: %(default)s)',
                             metavar='FILE')
         parser.add_argument('-a', '--all', action='store_true', default=False,
@@ -69,9 +72,23 @@ class CliParse(object):
                             dest='rsssections',
                             help='print the available sections of the rss feed to be used in the tweet template')
         self.opts = parser.parse_args()
-
+        # verify if the path to cache file is an absolute path
         if self.opts.cachefile and not os.path.isabs(self.opts.cachefile):
             sys.exit('You should provide an absolute path for the cache file')    
+        # verify if the path to cache file is an absolute path
+        # get the different config files, from a directory or from a *.ini style
+        for element in self.opts.config:
+            if element and not os.path.isabs(element):
+                sys.exit('You should provide an absolute path for the config file')    
+            if os.path.isdir(element):
+                #self.opts.configs = [os.path.join(element, i) for i in os.listdir(element) if i.lower().endswith('.ini')]
+                self.opts.configs = glob.glob(os.path.join(element, '*.ini'))
+            else:
+                # trying to glob the path
+                self.opts.configs = glob.glob(element)
+        # verify if a configuration file is provided
+        if not self.opts.configs:
+            sys.exit('no configuration file was found at the specified path(s) with the option -c')
 
     @property
     def options(self):
