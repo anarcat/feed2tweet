@@ -18,13 +18,14 @@ From sources
 * Install **setuptools** module::    
   
     $ wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python3.4
-  (Alternatively, Setuptools may be installed to a user-local path)::
+    
+Alternatively, Setuptools may be installed to a user-local path::
 	  
 	       $ wget https://bootstrap.pypa.io/ez_setup.py -O - | python3.4 - --user
 
 * Untar the tarball and go to the source directory with the following commands::
 
-    $ tar zxvf feed2tweet-0.8.tar.gz
+    $ tar zxvf feed2tweet-0.9.tar.gz
     $ cd feed2tweet
 
 * Next, to install Feed2tweet on your computer, type the following command with the root user::
