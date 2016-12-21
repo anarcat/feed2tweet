@@ -13,6 +13,7 @@ Guide
    install
    configure
    use
+   plugins
    license
    authors
 
