@@ -18,6 +18,7 @@
 
 # standard libraires imports
 import codecs
+import importlib
 import logging
 import os
 import sys
@@ -54,6 +55,7 @@ class Main(object):
             config = conf[1]
             tweetformat = conf[2]
             feed = conf[3]
+            plugins = conf[4]
             # open the persistent list
             cache = PersistentList(options['cachefile'][0:-3], 100)
             if options['hashtaglist']:
@@ -159,5 +161,17 @@ class Main(object):
                         print('populating RSS entry {}'.format(rss['id']))
                     # in both cas we store the id of the sent tweet
                     cache.append(rss['id'])
+                    # plugins
+                    if plugins and entrytosend:
+                        for plugin in plugins:
+                            capitalizedplugin = plugin.title()
+                            pluginclassname = '{plugin}Plugin'.format(plugin=capitalizedplugin)
+                            pluginmodulename = 'feed2tweet.plugins.{pluginmodule}'.format(pluginmodule=pluginclassname.lower())
+                            try:
+                                pluginmodule = importlib.import_module(pluginmodulename, '{pluginmodulename}'.format(pluginmodulename=pluginmodulename))
+                                pluginclass = getattr(pluginmodule, pluginclassname) 
+                                pluginclass(plugins[plugin], finaltweet)
+                            except ImportError as err:
+                                print(err)
             # do not forget to close cache (shelf object)
             cache.close()

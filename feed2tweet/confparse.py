@@ -95,7 +95,26 @@ class ConfParse(object):
                     options['hashtaglist'] = config.get('hashtaglist', 'several_words_hashtags_list')
                 except (NoOptionError, NoSectionError):
                     options['hashtaglist'] = False
-            self.confs.append((options, config, self.tweetformat, feed))
+            # plugins
+            plugins = {}
+            section = 'influxdb'
+            if config.has_section(section):
+                plugins[section] = {}
+                for currentoption in ['host','port','user','pass','database']:
+                    if config.has_option(section, currentoption):
+                        plugins[section][currentoption] = config.get(section, currentoption)
+                if 'host' not in plugins[section]:
+                    plugins[section]['host'] = '127.0.O.1'
+                if 'port' not in plugins[section]:
+                    plugins[section]['port'] = 8086
+                if 'measurement' not in plugins[section]:
+                    plugins[section]['measurement'] = 'tweets'
+                for field in ['user','pass','database']:
+                    if field not in plugins[section]:
+                        sys.exit('Parsing error for {field} in the [{section}] section: {field} is not defined'.format(field=field, section=section))
+
+            # storing results of the parsing
+            self.confs.append((options, config, self.tweetformat, feed, plugins))
 
     @property
     def confvalues(self):
