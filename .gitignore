@@ -1,3 +1,4 @@
+docs/build/
 feed2tweet.ini
 __pycache__
 cache.db
