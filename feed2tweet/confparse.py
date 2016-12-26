@@ -63,12 +63,20 @@ class ConfParse(object):
                         if self.stringsep in tmppattern:
                             options['patterns'][currentoption] = [i for i in tmppattern.split(self.stringsep) if i]
                         else:
-                            options['patterns'][currentoption] = tmppattern
+                            options['patterns'][currentoption] = [tmppattern]
 
                     # pattern_case_sensitive format
                     currentoption = '{}_pattern_case_sensitive'.format(pattern)
                     if config.has_option(section, currentoption):
-                        options['patternscasesensitive'][currentoption] = config.getboolean(section, currentoption)
+                        try:
+                            options['patternscasesensitive'][currentoption] = config.getboolean(section, currentoption)
+                        except ValueError as _:
+                            options['patternscasesensitive'][currentoption] = True
+
+                # check if options['patterns'] always has a counterpart to True in options['patternscasesensitive']
+                for patternoption in options['patterns']:
+                    if patternoption not in options['patternscasesensitive']:
+                        options['patternscasesensitive']['{pattern}_case_sensitive'.format(pattern=patternoption)] = True
 
             if not self.clioptions.cachefile:
                 try:
