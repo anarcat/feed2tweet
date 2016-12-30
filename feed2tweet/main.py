@@ -148,7 +148,7 @@ class Main(object):
                             addtag = AddTags(dedup.finaltweet, rss['hashtags'])
                             finaltweet = addtag.finaltweet
                         else:
-                            finaltweet = dedup
+                            finaltweet = dedup.finaltweet
                         
                     if clioptions.dryrun:
                         if entrytosend:
