@@ -1,14 +1,7 @@
 docs/build/
-feed2tweet.ini
 __pycache__
-cache.db
 *.swp
 *.pyc
-bloglinuxjobsfr.ini
-config.ini
-bloglinuxjobsconfig.ini
-bloglinuxjobsfrcache.db
-carlchenet.com.db
-carlchenet.com.ini
-jdh.ini
-jdh.db
+*.db
+*.ini
+*.txt
