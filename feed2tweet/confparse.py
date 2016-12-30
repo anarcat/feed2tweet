@@ -47,13 +47,14 @@ class ConfParse(object):
             # get the format of the tweet
             section = 'rss'
             if config.has_section(section):
+                # tweet option
                 confoption = 'tweet'
                 if config.has_option(section, confoption):
                     self.tweetformat = config.get(section, confoption)
                 else:
                     sys.exit('You should define a format for your tweet with the keyword "tweet" in the [rss] section')
 
-                # pattern format
+                # pattern format option
                 options['patterns'] = {}
                 options['patternscasesensitive'] = {}
                 for pattern in ['summary_detail', 'published_parsed', 'guidislink', 'authors', 'links', 'title_detail', 'author', 'author_detail', 'comments', 'published', 'summary', 'tags', 'title', 'link', 'id']:
@@ -78,32 +79,51 @@ class ConfParse(object):
                     if patternoption not in options['patternscasesensitive']:
                         options['patternscasesensitive']['{pattern}_case_sensitive'.format(pattern=patternoption)] = True
 
+                # rsslist
+                feeds = []
+                currentoption = 'uri_list'
+                if config.has_option(section, currentoption):
+                    rssfile = config.get(section, currentoption)
+                    rsslist = open(rssfile, 'r').readlines()
+                    rsslist =  (i.strip() for i in rsslist if i)
+                    for rss in rsslist:
+                        feeds.append(feedparser.parse(rss))
+
+                # uri
+                if not feeds and not self.clioptions.rss_uri:
+                    confoption = 'uri'
+                    if config.has_option(section, confoption):
+                        options['rss_uri'] = config.get('rss', 'uri')
+                    else:
+                        sys.exit('{confoption} parameter in the [{section}] section of the configuration file is mandatory. Exiting.'.format(section=section, confoptionn=confoption))
+                else:
+                    options['rss_uri'] = self.clioptions.rss_uri
+                # get the rss feed for rss parameter of [rss] section
+                feed = feedparser.parse(options['rss_uri'])
+
+            # cache section
+            section = 'cache'
             if not self.clioptions.cachefile:
-                try:
-                    options['cachefile'] = config.get('cache', 'cachefile')
-                except (NoOptionError, NoSectionError):
-                    sys.exit('You should provide an absolute path to the cache file in the [cache] section')
-                finally:
-                    if not os.path.isabs(options['cachefile']):
-                        sys.exit('You should provide an absolute path to the cache file in the [cache] section')
+                confoption = 'cachefile'
+                if config.has_section(section):
+                    options['cachefile'] = config.get(section, confoption)
+                else:
+                    sys.exit('You should provide a {confoption} parameter in the [{section}] section'.format(section=section, confoption=confoption))
+                if not os.path.isabs(options['cachefile']):
+                    sys.exit('You should provide an absolute path to the cache file in the [{section}] section'.format(section=section))
             else:
                 options['cachefile'] = self.clioptions.cachefile
 
-            if not self.clioptions.rss_uri:
-                try:
-                    options['rss_uri'] = config.get('rss', 'uri')
-                except (NoOptionError, NoSectionError):
-                    sys.exit('uri parameter in the [rss] section of the configuration file is mandatory. Exiting.')
-            else:
-                options['rss_uri'] = self.clioptions.rss_uri
-            feed = feedparser.parse(options['rss_uri'])
-
+            # hashtaglist section
+            section = 'hashtaglist'
             if not self.clioptions.hashtaglist:
-                try:
-                    options['hashtaglist'] = config.get('hashtaglist', 'several_words_hashtags_list')
-                except (NoOptionError, NoSectionError):
+                confoption = 'several_words_hashtags_list'
+                if config.has_section(section):
+                    options['hashtaglist'] = config.get(section, confoption)
+                else:
                     options['hashtaglist'] = False
-            # plugins
+
+            # plugins section
             plugins = {}
             section = 'influxdb'
             if config.has_section(section):
@@ -122,8 +142,12 @@ class ConfParse(object):
                         sys.exit('Parsing error for {field} in the [{section}] section: {field} is not defined'.format(field=field, section=section))
 
             # storing results of the parsing
-            self.confs.append((options, config, self.tweetformat, feed, plugins))
-
+            if feeds:
+                self.confs.append((options, config, self.tweetformat, feeds, plugins))
+            else:
+                self.confs.append((options, config, self.tweetformat, [feed], plugins))
+        
     @property
     def confvalues(self):
+        '''Return the values of the different configuration files'''
         return self.confs
