@@ -5,3 +5,4 @@ __pycache__
 *.db
 *.ini
 *.txt
+*.bck
