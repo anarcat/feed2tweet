@@ -132,7 +132,7 @@ class ConfParse(object):
                     if config.has_option(section, currentoption):
                         plugins[section][currentoption] = config.get(section, currentoption)
                 if 'host' not in plugins[section]:
-                    plugins[section]['host'] = '127.0.O.1'
+                    plugins[section]['host'] = '127.0.0.1'
                 if 'port' not in plugins[section]:
                     plugins[section]['port'] = 8086
                 if 'measurement' not in plugins[section]:
