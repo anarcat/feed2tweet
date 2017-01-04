@@ -170,7 +170,7 @@ class Main(object):
                                 pluginclassname = '{plugin}Plugin'.format(plugin=capitalizedplugin)
                                 pluginmodulename = 'feed2tweet.plugins.{pluginmodule}'.format(pluginmodule=pluginclassname.lower())
                                 try:
-                                    pluginmodule = importlib.import_module(pluginmodulename, '{pluginmodulename}'.format(pluginmodulename=pluginmodulename))
+                                    pluginmodule = importlib.import_module(pluginmodulename)
                                     pluginclass = getattr(pluginmodule, pluginclassname) 
                                     pluginclass(plugins[plugin], finaltweet)
                                 except ImportError as err:
