@@ -16,7 +16,7 @@
 # Setup for Feed2tweet
 '''Setup for Feed2tweet'''
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 CLASSIFIERS = [
     'Intended Audience :: End Users/Desktop',
@@ -38,7 +38,7 @@ setup(
     url = 'https://github.com/chaica/feed2tweet',
     classifiers=CLASSIFIERS,
     download_url='https://github.com/chaica/feed2tweet',
-    packages=['feed2tweet', 'feed2tweet.plugins'],
+    packages=find_packages(),
     scripts=['scripts/feed2tweet'],
     install_requires=['feedparser', 'persistentlist>=0.4', 'tweepy'],
     extras_require={
