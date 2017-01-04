@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 - new {field of the rss feed}_pattern option in the [rss] section of the configuration file
 - new {field of the rss feed}_pattern_case_sensitive option in the [rss] section of the configuration file
 - new plugin support
-- new plugin to store tweets in an influxdb database
+- new plugin influxdb to store tweets in an influxdb database
 
 ## [0.8] - 2016-12-13
 ### Added
