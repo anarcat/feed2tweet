@@ -46,9 +46,9 @@ For the full documentation, [read it online](https://feed2tweet.readthedocs.org/
 
 ### Authors
 
-Carl Chenet <chaica@ohmytux.com>
-Antoine Beaupré <anarcat@debian.org>
-First developed by Todd Eddy
+* Carl Chenet <chaica@ohmytux.com>
+* Antoine Beaupré <anarcat@debian.org>
+* First developed by Todd Eddy
 
 ### License
 
