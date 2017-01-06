@@ -78,12 +78,15 @@ class Main(object):
                 # cache the ids of last rss feeds
                 if not clioptions.all:
                     for i in entries:
-                        if i['id'] not in cache:
+                        if 'id' in i and i['id'] not in cache:
                             totweet.append(i)
                 else:
                     totweet = entries
 
                 for entry in totweet:
+                    if 'id' not in entry:
+                        # malformed feed entry, skip
+                        continue
                     logging.debug('found feed entry %s, %s', entry['id'], entry['title'])
 
 
