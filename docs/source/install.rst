@@ -25,7 +25,7 @@ Alternatively, Setuptools may be installed to a user-local path::
 
 * Untar the tarball and go to the source directory with the following commands::
 
-    $ tar zxvf feed2tweet-0.9.tar.gz
+    $ tar zxvf feed2tweet-1.0.tar.gz
     $ cd feed2tweet
 
 * Next, to install Feed2tweet on your computer, type the following command with the root user::
