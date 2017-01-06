@@ -113,6 +113,18 @@ class ConfParse(object):
                     sys.exit('You should provide an absolute path to the cache file in the [{section}] section'.format(section=section))
             else:
                 options['cachefile'] = self.clioptions.cachefile
+            ### cache limit
+            if config.has_section(section):
+                confoption = 'cache_limit'
+                if config.has_option(section, confoption):
+                    try:
+                        options['cache_limit'] = int(config.get(section, confoption))
+                    except ValueError as err:
+                        sys.exit('Error in configuration with the {confoption} parameter in [{section}]: {err}'.format(confoption=confoption, section=section, err=err))
+                else:
+                    options['cache_limit'] = 100
+            else:
+                options['cache_limit'] = 100
 
             # hashtaglist section
             section = 'hashtaglist'

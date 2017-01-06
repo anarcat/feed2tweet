@@ -57,7 +57,7 @@ class Main(object):
             feeds = conf[3]
             plugins = conf[4]
             # open the persistent list
-            cache = PersistentList(options['cachefile'][0:-3], 100)
+            cache = PersistentList(options['cachefile'][0:-3], options['cache_limit'])
             if options['hashtaglist']:
                 severalwordshashtags = codecs.open(options['hashtaglist'],
                                                    encoding='utf-8').readlines()
