@@ -66,6 +66,8 @@ class CliParse(object):
         parser.add_argument('-p', '--populate-cache', action='store_true', default=False,
                             dest='populate',
                             help='populate RSS entries in cache without actually posting them to Twitter')
+        parser.add_argument('-i', '--init', action='store_true', default=False,
+                            help='interactively reinitialize Twitter Oauth tokens')
         parser.add_argument('-r', '--rss', help='the RSS feed URL to fetch items from',
                             dest='rss_uri', metavar='http://...')
         parser.add_argument('--rss-sections', action='store_true', default=False,

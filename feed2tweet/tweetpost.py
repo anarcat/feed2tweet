@@ -36,14 +36,41 @@ class TweetPost(object):
         self.tweet = tweet
         self.main()
 
+    @staticmethod
+    def oauth_init(config, auth=None):
+        '''initialise oauth access tokens
+
+        will overwrite existing tokens without confirmation'''
+        if auth is None:
+            consumer_key = config.get('twitter', 'consumer_key')
+            consumer_secret = config.get('twitter', 'consumer_secret')
+            auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        logging.warning("Twitter access tokens need to be configured")
+        try:
+            redirect_url = auth.get_authorization_url()
+        except tweepy.TweepError:
+            logging.error('Error! Failed to get request token')
+        verifier = input('Visit %s and enter code here:' % redirect_url)
+        try:
+            auth.get_access_token(verifier)
+        except tweepy.TweepError:
+            logging.error('Error! Failed to get access token')
+        logging.debug('received access tokens, writing to config')
+        config.set('twitter', 'access_token', auth.access_token)
+        config.set('twitter', 'access_token_secret', auth.access_token_secret)
+
     def main(self):
         '''Main of the TweetPost class'''
         consumer_key = self.config.get('twitter', 'consumer_key')
         consumer_secret = self.config.get('twitter', 'consumer_secret')
-        access_token = self.config.get('twitter', 'access_token')
-        access_token_secret = self.config.get('twitter', 'access_token_secret')
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        auth.set_access_token(access_token, access_token_secret)
+        try:
+            access_token = self.config.get('twitter', 'access_token')
+            access_token_secret = self.config.get('twitter', 'access_token_secret')
+            auth.set_access_token(access_token, access_token_secret)
+        except NoOptionError as e:
+            logging.exception('wtf: %s', e)
+            TweetPost.oauth_init(self.config, auth)
         api = tweepy.API(auth)
         try:
             api.update_status(self.tweet)

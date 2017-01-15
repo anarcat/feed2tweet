@@ -25,6 +25,8 @@ import sys
 # 3rd party library imports
 import feedparser
 
+from feed2tweet.tweetpost import TweetPost
+
 class ConfParse(object):
     '''ConfParse class'''
     def __init__(self, clioptions):
@@ -152,6 +154,10 @@ class ConfParse(object):
                 for field in ['user','pass','database']:
                     if field not in plugins[section]:
                         sys.exit('Parsing error for {field} in the [{section}] section: {field} is not defined'.format(field=field, section=section))
+
+            if self.clioptions.init and TweetPost.oauth_init(config):
+                with open(os.path.expanduser(pathtoconfig), 'w') as configfile:
+                    config.write(configfile)
 
             # storing results of the parsing
             if feeds:
